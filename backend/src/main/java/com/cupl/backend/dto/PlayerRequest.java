@@ -27,6 +27,9 @@ public class PlayerRequest {
     @Email
     private String email;
 
+    @NotBlank
+    private String password;
+
     private String phone;
 
     private String medicalConditions;
@@ -79,6 +82,14 @@ public class PlayerRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getPhone() {

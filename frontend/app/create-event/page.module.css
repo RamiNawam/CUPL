@@ -1,0 +1,214 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.heroSection {
+  text-align: center;
+  padding: var(--spacing-xl) 0;
+  background: linear-gradient(135deg, rgba(209, 22, 42, 0.1) 0%, rgba(0, 0, 0, 1) 100%);
+}
+
+.heroSection h1 {
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-white);
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.formSection {
+  padding: var(--spacing-xl) 0;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.form {
+  margin-top: var(--spacing-lg);
+}
+
+.formGroup {
+  margin-bottom: var(--spacing-md);
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-white);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.required {
+  color: var(--color-red);
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: var(--color-white);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: var(--color-red);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.formGroup input:disabled,
+.formGroup textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.formGroup input.error,
+.formGroup textarea.error {
+  border-color: var(--color-red);
+}
+
+.errorMessage {
+  display: block;
+  color: var(--color-red);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.formActions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  margin-top: var(--spacing-lg);
+}
+
+.successMessage {
+  text-align: center;
+  padding: var(--spacing-lg) 0;
+}
+
+.successMessage h3 {
+  color: var(--color-white);
+  margin-bottom: var(--spacing-md);
+  font-size: 1.5rem;
+}
+
+.successMessage p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.125rem;
+}
+
+.imageUploadSection {
+  margin-top: var(--spacing-xs);
+}
+
+.imageUploadArea {
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: var(--spacing-lg);
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.imageUploadArea:hover {
+  border-color: var(--color-red);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.fileInput {
+  display: none;
+}
+
+.fileInputLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.uploadIcon {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-xs);
+}
+
+.fileHint {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.imagePreviewContainer {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.imagePreview {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  display: block;
+}
+
+.removeImageButton {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--color-white);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.removeImageButton:hover:not(:disabled) {
+  background: var(--color-red);
+  border-color: var(--color-red);
+}
+
+.removeImageButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .formActions {
+    flex-direction: column;
+  }
+
+  .formActions button {
+    width: 100%;
+  }
+
+  .imagePreview {
+    max-height: 250px;
+  }
+}

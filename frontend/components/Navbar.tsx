@@ -3,20 +3,32 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import SignInModal from './SignInModal';
+import Button from './Button';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSignInOpen, setIsSignInOpen] = useState(false);
   const pathname = usePathname();
+  const { user, logout, isAuthenticated, isAdmin } = useAuth();
 
-  const navLinks = [
+  const baseNavLinks = [
     { href: '/', label: 'Home' },
-    { href: '/register', label: 'Register' },
     { href: '/events', label: 'Events' },
-    { href: '/about', label: 'About' },
     { href: '/sponsors', label: 'Sponsors' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/register', label: 'Register' },
+    { href: '/about', label: 'About/Contact' },
   ];
+
+  // Add Create Event link for admin at the end
+  const navLinks = isAdmin
+    ? [
+        ...baseNavLinks,
+        { href: '/create-event', label: 'Create Event' },
+      ]
+    : baseNavLinks;
 
   return (
     <nav className={styles.navbar}>
@@ -47,8 +59,37 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          <li className={styles.authSection}>
+            {isAuthenticated ? (
+              <div className={styles.userInfo}>
+                <span className={styles.userEmail}>{user?.email}</span>
+                <Button
+                  onClick={() => {
+                    logout();
+                    setIsOpen(false);
+                  }}
+                  variant="outline"
+                  size="small"
+                >
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Button
+                onClick={() => {
+                  setIsSignInOpen(true);
+                  setIsOpen(false);
+                }}
+                variant="primary"
+                size="small"
+              >
+                Sign In
+              </Button>
+            )}
+          </li>
         </ul>
       </div>
+      <SignInModal isOpen={isSignInOpen} onClose={() => setIsSignInOpen(false)} />
     </nav>
   );
 }

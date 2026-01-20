@@ -14,13 +14,23 @@ interface FormData {
   university: string;
   universityTeam: string;
   email: string;
+  password: string;
   phone: string;
   medicalConditions: string;
   comments: string;
 }
 
 interface FormErrors {
-  [key: string]: string;
+  fullName?: string;
+  gender?: string;
+  dateOfBirth?: string;
+  university?: string;
+  universityTeam?: string;
+  email?: string;
+  password?: string;
+  phone?: string;
+  medicalConditions?: string;
+  comments?: string;
 }
 
 export default function RegisterPage() {
@@ -31,6 +41,7 @@ export default function RegisterPage() {
     university: '',
     universityTeam: '',
     email: '',
+    password: '',
     phone: '',
     medicalConditions: '',
     comments: '',
@@ -103,6 +114,12 @@ export default function RegisterPage() {
       newErrors.email = 'Please enter a valid email address';
     }
 
+    if (!formData.password.trim()) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -115,16 +132,61 @@ export default function RegisterPage() {
     }
 
     setIsSubmitting(true);
+    setErrors({});
 
-    // TODO: Connect to backend API
-    // POST /api/players
-    // Handle backend errors (409 for duplicate email, 400 for validation errors)
+    try {
+      const response = await fetch('http://localhost:8080/api/players', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          gender: formData.gender,
+          dateOfBirth: formData.dateOfBirth,
+          university: formData.university,
+          teamLevel: formData.universityTeam,
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone || null,
+          medicalConditions: formData.medicalConditions || null,
+          comments: formData.comments || null,
+        }),
+      });
 
-    setTimeout(() => {
-      console.log('Form submitted:', formData);
+      if (!response.ok) {
+        const errorText = await response.text();
+        let errorMessage = 'Registration failed. Please try again.';
+        
+        if (response.status === 409) {
+          errorMessage = 'Email already exists. Please use a different email.';
+          setErrors({ email: errorMessage });
+        } else if (response.status === 400) {
+          errorMessage = 'Invalid data. Please check your information.';
+          try {
+            const errorData = JSON.parse(errorText);
+            const newErrors: FormErrors = {};
+            if (errorData.message) {
+              newErrors.email = errorData.message;
+            }
+            setErrors(newErrors);
+          } catch {
+            setErrors({ email: errorMessage });
+          }
+        } else {
+          setErrors({ email: errorMessage });
+        }
+        setIsSubmitting(false);
+        return;
+      }
+
       setIsSubmitting(false);
       setIsSuccess(true);
-    }, 1500);
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      setErrors({ email: 'Failed to connect to server. Please try again later.' });
+      setIsSubmitting(false);
+    }
   };
 
   if (isSuccess) {
@@ -286,6 +348,26 @@ export default function RegisterPage() {
               )}
             </div>
 
+            <div className={styles.formGroup}>
+              <label htmlFor="password">
+                Password <span className={styles.required}>*</span>
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className={errors.password ? styles.error : ''}
+                placeholder="Enter password"
+              />
+              {errors.password && (
+                <span className={styles.errorMessage}>{errors.password}</span>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.formRow}>
             <div className={styles.formGroup}>
               <label htmlFor="phone">Phone Number</label>
               <input

@@ -6,12 +6,12 @@ import styles from './page.module.css';
 
 export default function Home() {
   const clubs = [
-    'McGill Padel Club',
-    'UofT Padel',
-    'UTM Padel',
-    'HEC Montreal Padel Club',
-    'Polysports Padel',
-    'Concordia Padel Club',
+    { name: 'McGill Padel Club', logo: '/club-logos/mcgill.png' },
+    { name: 'UofT Padel', logo: '/club-logos/UofT PADEL.png' },
+    { name: 'UTM Padel', logo: '/club-logos/UTM PADEL.png' },
+    { name: 'HEC Montreal Padel Club', logo: '/club-logos/HEC Montreal PAEDL CLUB.png' },
+    { name: 'Polysports Padel', logo: '/club-logos/polysports.png' },
+    { name: 'Concordia Padel Club', logo: '/club-logos/Concordia.png' },
   ];
 
   const events = [
@@ -48,6 +48,13 @@ export default function Home() {
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.heroContent}>
+          <div className={styles.logoContainer}>
+            <img 
+              src="/cupl-logo.png" 
+              alt="CUPL Logo" 
+              className={styles.cuplLogo}
+            />
+          </div>
           <h1>Canadian Universities Padel League</h1>
           <p className={styles.tagline}>
             For students, by students. Join the premier padel competition across Canadian universities.
@@ -63,8 +70,21 @@ export default function Home() {
         <h2 className={styles.sectionTitle}>Participating Clubs</h2>
         <div className={styles.universitiesGrid}>
           {clubs.map((club) => (
-            <div key={club} className={styles.universityCard}>
-              {club}
+            <div key={club.name} className={styles.universityCard}>
+              <div className={styles.logoContainer}>
+                {club.logo ? (
+                  <img 
+                    src={club.logo} 
+                    alt={club.name} 
+                    className={styles.clubLogo}
+                  />
+                ) : (
+                  <div className={styles.logoPlaceholder}>
+                    {club.name.charAt(0)}
+                  </div>
+                )}
+              </div>
+              <p className={styles.clubName}>{club.name}</p>
             </div>
           ))}
         </div>
