@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Testing
+coverage/
+
+# Next.js
+frontend/.next/
+frontend/out/
+frontend/.vercel
+
+# Production
+build/
+dist/
+
+# Misc
+.DS_Store
+*.pem
+*.log
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Maven (Backend)
+backend/target/
+backend/.classpath
+backend/.project
+backend/.settings/
+
+# Compiled files
+*.class
+*.jar
+*.war
+*.ear
+
+# Frontend specific
+frontend/next-env.d.ts
