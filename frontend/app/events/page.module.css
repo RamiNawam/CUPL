@@ -28,6 +28,51 @@
   padding: var(--spacing-xl) 0;
 }
 
+.calendarContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.dateGroup {
+  margin-bottom: var(--spacing-xl);
+}
+
+.dateHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.dateLine {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+}
+
+.dateLabel {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-white);
+  white-space: nowrap;
+  text-transform: none;
+  margin: 0;
+}
+
+.eventsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: var(--spacing-lg);
+  padding-left: var(--spacing-md);
+}
+
 .eventsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -118,7 +163,8 @@
 }
 
 @media (max-width: 768px) {
-  .eventsGrid {
+  .eventsGrid,
+  .eventsList {
     grid-template-columns: 1fr;
     gap: var(--spacing-md);
   }
@@ -134,5 +180,17 @@
   .subtitle {
     font-size: 1.125rem;
     padding: 0 var(--spacing-md);
+  }
+
+  .dateLabel {
+    font-size: 1.25rem;
+  }
+
+  .dateHeader {
+    gap: var(--spacing-sm);
+  }
+
+  .eventsList {
+    padding-left: 0;
   }
 }

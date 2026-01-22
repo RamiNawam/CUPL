@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  h2:
+    console:
+      enabled: false
+  main:
+    allow-bean-definition-overriding: true
+
+app:
+  cors:
+    allowed-origin: http://localhost:3000
+  upload:
+    dir: test-uploads
+  base-url: http://localhost:8080
+
+# Disable DataInitializer in tests
+logging:
+  level:
+    com.cupl.backend.config.DataInitializer: OFF

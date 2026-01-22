@@ -1,10 +1,11 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { getApiUrl, getAuthHeaders } from '@/lib/api';
 
 interface User {
   email: string;
-  role: 'GUEST' | 'USER' | 'ADMIN';
+  role: 'GUEST' | 'USER' | 'ADMIN' | 'CLUB';
   token?: string;
 }
 
@@ -14,6 +15,7 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  isClub: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -35,11 +37,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
+      const response = await fetch(`${getApiUrl()}/api/auth/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ email: email.trim(), password }),
       });
 
@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = await response.json();
       const userData: User = {
         email: data.email,
-        role: data.role as 'GUEST' | 'USER' | 'ADMIN',
+        role: data.role as 'GUEST' | 'USER' | 'ADMIN' | 'CLUB',
         token: data.token,
       };
 
@@ -88,9 +88,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isAuthenticated = user !== null && user.role !== 'GUEST';
   const isAdmin = user?.role === 'ADMIN';
+  const isClub = user?.role === 'CLUB';
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated, isAdmin }}>
+    <AuthContext.Provider value={{ user, login, logout, isAuthenticated, isAdmin, isClub }}>
       {children}
     </AuthContext.Provider>
   );

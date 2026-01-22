@@ -1,10 +1,28 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Section from '@/components/Section';
 import Button from '@/components/Button';
+import SignInModal from '@/components/SignInModal';
+import { getApiUrl, getImageUrl } from '@/lib/api';
 import styles from './page.module.css';
 
+interface Event {
+  id: string;
+  title: string;
+  date: string;
+  location: string;
+  description: string;
+  image: string | null;
+}
+
 export default function Home() {
+  const [isSignInOpen, setIsSignInOpen] = useState(false);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const clubs = [
     { name: 'McGill Padel Club', logo: '/club-logos/mcgill.png' },
     { name: 'UofT Padel', logo: '/club-logos/UofT PADEL.png' },
@@ -14,32 +32,25 @@ export default function Home() {
     { name: 'Concordia Padel Club', logo: '/club-logos/Concordia.png' },
   ];
 
-  const events = [
-    {
-      id: 1,
-      title: 'CUPL Championship 2024',
-      date: 'March 15-17, 2024',
-      location: 'Montreal, QC',
-      description: 'Join us for the inaugural CUPL Championship featuring teams from universities across Canada. Watch the best student padel players compete for the championship title.',
-      image: null, // Add image path when available
-    },
-    {
-      id: 2,
-      title: 'Regional Qualifiers',
-      date: 'February 10-11, 2024',
-      location: 'Toronto, ON',
-      description: 'Regional qualifiers to determine which teams will advance to the national championship. Open to all registered CUPL member clubs.',
-      image: null, // Add image path when available
-    },
-    {
-      id: 3,
-      title: 'Padel Clinic & Training',
-      date: 'January 20, 2024',
-      location: 'Vancouver, BC',
-      description: 'Free padel clinic for students interested in learning the sport or improving their skills. Professional coaches will be on hand to provide guidance.',
-      image: null, // Add image path when available
-    },
-  ];
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch(`${getApiUrl()}/api/events`);
+      if (response.ok) {
+        const data = await response.json();
+        setEvents(data);
+      } else {
+        console.error('Failed to fetch events:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={styles.page}>
@@ -59,8 +70,12 @@ export default function Home() {
           <p className={styles.tagline}>
             For students, by students. Join the premier padel competition across Canadian universities.
           </p>
-          <Button href="/register" variant="primary" size="large">
-            Register Now
+          <Button 
+            onClick={() => setIsSignInOpen(true)}
+            variant="primary" 
+            size="large"
+          >
+            Sign Up Now
           </Button>
         </div>
       </section>
@@ -93,29 +108,38 @@ export default function Home() {
       {/* Events Section */}
       <Section className={styles.eventsSection}>
         <h2 className={styles.sectionTitle}>Upcoming Events</h2>
-        <div className={styles.eventsGrid}>
-          {events.map((event) => (
-            <div key={event.id} className={styles.eventCard}>
-              <div className={styles.eventImage}>
-                {event.image ? (
-                  <img src={event.image} alt={event.title} />
-                ) : (
-                  <div className={styles.imagePlaceholder}>
-                    <span>Event Image</span>
-                  </div>
-                )}
+        {loading ? (
+          <p>Loading events...</p>
+        ) : events.length === 0 ? (
+          <p>No events scheduled at this time.</p>
+        ) : (
+          <div className={styles.eventsGrid}>
+            {events.map((event) => (
+              <div key={event.id} className={styles.eventCard}>
+                <div className={styles.eventImage}>
+                  {event.image ? (
+                    <img 
+                      src={getImageUrl(event.image) || ''} 
+                      alt={event.title} 
+                    />
+                  ) : (
+                    <div className={styles.imagePlaceholder}>
+                      <span>Event Image</span>
+                    </div>
+                  )}
+                </div>
+                <div className={styles.eventContent}>
+                  <h3 className={styles.eventTitle}>{event.title}</h3>
+                  <p className={styles.eventDate}>{event.date}</p>
+                  <p className={styles.eventDescription}>{event.description}</p>
+                  {event.location && (
+                    <p className={styles.eventLocation}>📍 {event.location}</p>
+                  )}
+                </div>
               </div>
-              <div className={styles.eventContent}>
-                <h3 className={styles.eventTitle}>{event.title}</h3>
-                <p className={styles.eventDate}>{event.date}</p>
-                <p className={styles.eventDescription}>{event.description}</p>
-                {event.location && (
-                  <p className={styles.eventLocation}>📍 {event.location}</p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </Section>
 
       {/* Sponsors Preview */}
@@ -132,6 +156,7 @@ export default function Home() {
       </Section>
 
       <Footer />
+      <SignInModal isOpen={isSignInOpen} onClose={() => setIsSignInOpen(false)} />
     </div>
   );
 }

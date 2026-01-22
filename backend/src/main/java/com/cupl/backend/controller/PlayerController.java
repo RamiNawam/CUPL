@@ -1,6 +1,7 @@
 package com.cupl.backend.controller;
 
 import com.cupl.backend.dto.PlayerRequest;
+import com.cupl.backend.dto.PlayerResponse;
 import com.cupl.backend.model.Player;
 import com.cupl.backend.service.PlayerService;
 import jakarta.validation.Valid;
@@ -23,8 +24,8 @@ public class PlayerController {
     }
 
     @PostMapping
-    public ResponseEntity<Player> createPlayer(@Valid @RequestBody PlayerRequest request) {
+    public ResponseEntity<PlayerResponse> createPlayer(@Valid @RequestBody PlayerRequest request) {
         Player saved = playerService.createPlayer(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        return ResponseEntity.status(HttpStatus.CREATED).body(PlayerResponse.from(saved));
     }
 }

@@ -1,5 +1,6 @@
 package com.cupl.backend.service;
 
+import com.cupl.backend.config.JwtUtil;
 import com.cupl.backend.dto.AuthResponse;
 import com.cupl.backend.dto.LoginRequest;
 import com.cupl.backend.model.User;
@@ -10,16 +11,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -35,8 +37,8 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
 
-        // Generate simple token (UUID for now, can be JWT later)
-        String token = UUID.randomUUID().toString();
+        // Generate JWT token
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
         
         return new AuthResponse(user, token);
     }

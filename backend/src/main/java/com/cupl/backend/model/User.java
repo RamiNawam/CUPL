@@ -89,6 +89,7 @@ public class User {
     public enum UserRole {
         GUEST,
         USER,
-        ADMIN
+        ADMIN,
+        CLUB
     }
 }

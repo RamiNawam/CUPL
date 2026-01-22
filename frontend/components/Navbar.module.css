@@ -23,6 +23,7 @@
   letter-spacing: 0.1em;
   color: var(--color-white);
   text-transform: uppercase;
+  margin-right: var(--spacing-lg);
 }
 
 .logo:hover {

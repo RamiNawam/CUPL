@@ -7,10 +7,11 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Section from '@/components/Section';
 import Button from '@/components/Button';
+import { getApiUrl, fetchWithAuth } from '@/lib/api';
 import styles from './page.module.css';
 
 export default function CreateEventPage() {
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
   const router = useRouter();
   const [formData, setFormData] = useState({
     title: '',
@@ -157,15 +158,23 @@ export default function CreateEventPage() {
 
     setIsSubmitting(true);
 
-    // TODO: Connect to backend API
-    // POST /api/events
-    // The backend will save the event to the database
+    try {
+      const response = await fetchWithAuth('/api/events', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: formData.title,
+          date: formData.date,
+          location: formData.location,
+          description: formData.description,
+          image: formData.image,
+        }),
+      }, user?.token);
 
-    setTimeout(() => {
-      console.log('Event created:', {
-        ...formData,
-        image: formData.image ? 'Image uploaded (base64)' : 'No image',
-      });
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || 'Failed to create event');
+      }
+
       setIsSubmitting(false);
       setIsSuccess(true);
       setTimeout(() => {
@@ -184,8 +193,16 @@ export default function CreateEventPage() {
         if (fileInput) {
           fileInput.value = '';
         }
+        // Redirect to events page
+        router.push('/events');
       }, 2000);
-    }, 1500);
+    } catch (error) {
+      console.error('Error creating event:', error);
+      setErrors({
+        submit: error instanceof Error ? error.message : 'Failed to create event. Please try again.',
+      });
+      setIsSubmitting(false);
+    }
   };
 
   return (

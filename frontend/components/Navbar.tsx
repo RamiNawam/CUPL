@@ -12,23 +12,29 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const pathname = usePathname();
-  const { user, logout, isAuthenticated, isAdmin } = useAuth();
+  const { user, logout, isAuthenticated, isAdmin, isClub } = useAuth();
 
   const baseNavLinks = [
     { href: '/', label: 'Home' },
     { href: '/events', label: 'Events' },
     { href: '/sponsors', label: 'Sponsors' },
-    { href: '/register', label: 'Register' },
     { href: '/about', label: 'About/Contact' },
   ];
 
-  // Add Create Event link for admin at the end
-  const navLinks = isAdmin
-    ? [
-        ...baseNavLinks,
-        { href: '/create-event', label: 'Create Event' },
-      ]
-    : baseNavLinks;
+  // Add role-specific links
+  let navLinks = baseNavLinks;
+  if (isAdmin) {
+    navLinks = [
+      ...baseNavLinks,
+      { href: '/create-event', label: 'Create Event' },
+      { href: '/create-club', label: 'Create Club Account' },
+    ];
+  } else if (isClub) {
+    navLinks = [
+      ...baseNavLinks,
+      { href: '/manage-club', label: 'Manage Club' },
+    ];
+  }
 
   return (
     <nav className={styles.navbar}>

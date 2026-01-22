@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { getApiUrl } from '@/lib/api';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Section from '@/components/Section';
@@ -34,6 +37,8 @@ interface FormErrors {
 }
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const { login } = useAuth();
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
     gender: '',
@@ -135,7 +140,7 @@ export default function RegisterPage() {
     setErrors({});
 
     try {
-      const response = await fetch('http://localhost:8080/api/players', {
+      const response = await fetch(`${getApiUrl()}/api/players`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -156,10 +161,10 @@ export default function RegisterPage() {
 
       if (!response.ok) {
         const errorText = await response.text();
-        let errorMessage = 'Registration failed. Please try again.';
+        let errorMessage = 'Sign up failed. Please try again.';
         
         if (response.status === 409) {
-          errorMessage = 'Email already exists. Please use a different email.';
+          errorMessage = 'Email already exists. Please use a different email or sign in instead.';
           setErrors({ email: errorMessage });
         } else if (response.status === 400) {
           errorMessage = 'Invalid data. Please check your information.';
@@ -180,10 +185,23 @@ export default function RegisterPage() {
         return;
       }
 
-      setIsSubmitting(false);
-      setIsSuccess(true);
+      // Registration successful - automatically sign the user in
+      try {
+        await login(formData.email, formData.password);
+        setIsSubmitting(false);
+        setIsSuccess(true);
+        // Redirect to home after a brief delay
+        setTimeout(() => {
+          router.push('/');
+        }, 2000);
+      } catch (loginError) {
+        // Registration succeeded but auto-login failed
+        setIsSubmitting(false);
+        setIsSuccess(true);
+        // Still show success, user can sign in manually
+      }
     } catch (error: any) {
-      console.error('Registration error:', error);
+      console.error('Sign up error:', error);
       setErrors({ email: 'Failed to connect to server. Please try again later.' });
       setIsSubmitting(false);
     }
@@ -195,14 +213,11 @@ export default function RegisterPage() {
         <Navbar />
         <Section className={styles.successSection}>
           <div className={styles.successContent}>
-            <h2>Registration Successful!</h2>
-            <p>Your player registration has been submitted successfully.</p>
+            <h2>Sign Up Successful!</h2>
+            <p>Your account has been created and you've been signed in automatically.</p>
             <p className={styles.successNote}>
-              We'll be in touch soon with more details.
+              Redirecting to home page...
             </p>
-            <Button href="/" variant="primary" size="medium">
-              Return Home
-            </Button>
           </div>
         </Section>
         <Footer />
@@ -214,9 +229,9 @@ export default function RegisterPage() {
     <div className={styles.page}>
       <Navbar />
       <Section className={styles.formSection}>
-        <h1>Player Registration</h1>
+        <h1>Sign Up</h1>
         <p className={styles.intro}>
-          Join the Canadian Universities Padel League. Fill out the form below to register.
+          Join the Canadian Universities Padel League. Create your account to get started.
         </p>
 
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -416,7 +431,7 @@ export default function RegisterPage() {
               size="large"
               className={styles.submitButton}
             >
-              {isSubmitting ? 'Submitting...' : 'Submit Registration'}
+              {isSubmitting ? 'Creating Account...' : 'Sign Up'}
             </Button>
           </div>
         </form>

@@ -37,6 +37,9 @@ public class Player {
     @Column(nullable = false)
     private String teamLevel;
 
+    @Column
+    private UUID clubId; // Reference to the club this player belongs to
+
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -107,6 +110,14 @@ public class Player {
 
     public void setTeamLevel(String teamLevel) {
         this.teamLevel = teamLevel;
+    }
+
+    public UUID getClubId() {
+        return clubId;
+    }
+
+    public void setClubId(UUID clubId) {
+        this.clubId = clubId;
     }
 
     public String getEmail() {
