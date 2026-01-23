@@ -15,12 +15,11 @@ interface FormData {
   gender: string;
   dateOfBirth: string;
   university: string;
-  universityTeam: string;
   email: string;
   password: string;
+  confirmPassword: string;
   phone: string;
-  medicalConditions: string;
-  comments: string;
+  photoConsent: boolean;
 }
 
 type FormErrors = Partial<Record<keyof FormData, string>>;
@@ -28,22 +27,24 @@ type FormErrors = Partial<Record<keyof FormData, string>>;
 export default function RegisterPage() {
   const router = useRouter();
   const { login } = useAuth();
+  const defaultTeamLevel = 'Intermediate';
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
     gender: '',
     dateOfBirth: '',
     university: '',
-    universityTeam: '',
     email: '',
     password: '',
+    confirmPassword: '',
     phone: '',
-    medicalConditions: '',
-    comments: '',
+    photoConsent: false,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const clubs = [
     'McGill Padel Club',
@@ -55,15 +56,34 @@ export default function RegisterPage() {
     'Other',
   ];
 
+  const formatDob = (digits: string) => {
+    const template = 'yyyymmdd';
+    const padded = `${digits}${template.slice(digits.length)}`.slice(0, 8);
+    return `${padded.slice(0, 4)}-${padded.slice(4, 6)}-${padded.slice(6, 8)}`;
+  };
+
+  const getIsoDob = (digits: string) => {
+    if (digits.length !== 8) return null;
+    return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6, 8)}`;
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target as HTMLInputElement;
     const field = name as keyof FormData;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (name === 'dateOfBirth') {
+      const digitsOnly = value.replace(/\D/g, '').slice(0, 8);
+      setFormData((prev) => ({
+        ...prev,
+        dateOfBirth: digitsOnly,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value,
+      }));
+    }
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => {
@@ -85,22 +105,21 @@ export default function RegisterPage() {
       newErrors.gender = 'Gender is required';
     }
 
-    if (!formData.dateOfBirth) {
+    if (!formData.dateOfBirth || formData.dateOfBirth.length !== 8) {
       newErrors.dateOfBirth = 'Date of birth is required';
     } else {
-      const birthDate = new Date(formData.dateOfBirth);
+      const isoDob = getIsoDob(formData.dateOfBirth);
+      const birthDate = isoDob ? new Date(isoDob) : null;
       const today = new Date();
-      if (birthDate >= today) {
+      if (!birthDate || Number.isNaN(birthDate.getTime())) {
+        newErrors.dateOfBirth = 'Please enter a valid date';
+      } else if (birthDate >= today) {
         newErrors.dateOfBirth = 'Date of birth must be in the past';
       }
     }
 
     if (!formData.university) {
       newErrors.university = 'University is required';
-    }
-
-    if (!formData.universityTeam) {
-      newErrors.universityTeam = 'University team is required';
     }
 
     if (!formData.email.trim()) {
@@ -113,6 +132,14 @@ export default function RegisterPage() {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
+    }
+    if (!formData.confirmPassword.trim()) {
+      newErrors.confirmPassword = 'Please retype your password';
+    } else if (formData.confirmPassword !== formData.password) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+    if (!formData.photoConsent) {
+      newErrors.photoConsent = 'Please accept photo consent';
     }
 
     setErrors(newErrors);
@@ -138,14 +165,14 @@ export default function RegisterPage() {
         body: JSON.stringify({
           fullName: formData.fullName,
           gender: formData.gender,
-          dateOfBirth: formData.dateOfBirth,
+          dateOfBirth: getIsoDob(formData.dateOfBirth),
           university: formData.university,
-          teamLevel: formData.universityTeam,
+          teamLevel: defaultTeamLevel,
           email: formData.email,
           password: formData.password,
           phone: formData.phone || null,
-          medicalConditions: formData.medicalConditions || null,
-          comments: formData.comments || null,
+          medicalConditions: null,
+          comments: null,
         }),
       });
 
@@ -243,6 +270,24 @@ export default function RegisterPage() {
                 <span className={styles.errorMessage}>{errors.fullName}</span>
               )}
             </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="email">
+                Email <span className={styles.required}>*</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className={errors.email ? styles.error : ''}
+                placeholder="your.email@example.com"
+              />
+              {errors.email && (
+                <span className={styles.errorMessage}>{errors.email}</span>
+              )}
+            </div>
           </div>
 
           <div className={styles.formRow}>
@@ -269,26 +314,6 @@ export default function RegisterPage() {
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="dateOfBirth">
-                Date of Birth <span className={styles.required}>*</span>
-              </label>
-              <input
-                type="date"
-                id="dateOfBirth"
-                name="dateOfBirth"
-                value={formData.dateOfBirth}
-                onChange={handleChange}
-                className={errors.dateOfBirth ? styles.error : ''}
-                max={new Date().toISOString().split('T')[0]}
-              />
-              {errors.dateOfBirth && (
-                <span className={styles.errorMessage}>{errors.dateOfBirth}</span>
-              )}
-            </div>
-          </div>
-
-          <div className={styles.formRow}>
-            <div className={styles.formGroup}>
               <label htmlFor="university">
                 Club <span className={styles.required}>*</span>
               </label>
@@ -310,69 +335,28 @@ export default function RegisterPage() {
                 <span className={styles.errorMessage}>{errors.university}</span>
               )}
             </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="universityTeam">
-                University Team <span className={styles.required}>*</span>
-              </label>
-              <select
-                id="universityTeam"
-                name="universityTeam"
-                value={formData.universityTeam}
-                onChange={handleChange}
-                className={errors.universityTeam ? styles.error : ''}
-              >
-                <option value="">Select team</option>
-                <option value="1st team">1st Team</option>
-                <option value="2nd team">2nd Team</option>
-                <option value="3rd team">3rd Team</option>
-                <option value="Other">Other</option>
-              </select>
-              {errors.universityTeam && (
-                <span className={styles.errorMessage}>{errors.universityTeam}</span>
-              )}
-            </div>
           </div>
 
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
-              <label htmlFor="email">
-                Email <span className={styles.required}>*</span>
+              <label htmlFor="dateOfBirth">
+                Date of Birth <span className={styles.required}>*</span>
               </label>
               <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
+                type="text"
+                id="dateOfBirth"
+                name="dateOfBirth"
+                value={formatDob(formData.dateOfBirth)}
                 onChange={handleChange}
-                className={errors.email ? styles.error : ''}
-                placeholder="your.email@example.com"
+                className={`${styles.dateInput} ${errors.dateOfBirth ? styles.error : ''}`}
+                inputMode="numeric"
+                placeholder="yyyy-mm-dd"
               />
-              {errors.email && (
-                <span className={styles.errorMessage}>{errors.email}</span>
+              {errors.dateOfBirth && (
+                <span className={styles.errorMessage}>{errors.dateOfBirth}</span>
               )}
             </div>
 
-            <div className={styles.formGroup}>
-              <label htmlFor="password">
-                Password <span className={styles.required}>*</span>
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className={errors.password ? styles.error : ''}
-                placeholder="Enter password"
-              />
-              {errors.password && (
-                <span className={styles.errorMessage}>{errors.password}</span>
-              )}
-            </div>
-          </div>
-
-          <div className={styles.formRow}>
             <div className={styles.formGroup}>
               <label htmlFor="phone">Phone Number</label>
               <input
@@ -387,30 +371,82 @@ export default function RegisterPage() {
           </div>
 
           <div className={styles.formRow}>
-            <div className={`${styles.formGroup} ${styles.fullWidth}`}>
-              <label htmlFor="medicalConditions">Medical Conditions</label>
-              <textarea
-                id="medicalConditions"
-                name="medicalConditions"
-                value={formData.medicalConditions}
-                onChange={handleChange}
-                rows={4}
-                placeholder="Please list any medical conditions or allergies..."
-              />
+            <div className={styles.formGroup}>
+              <label htmlFor="password">
+                Password <span className={styles.required}>*</span>
+              </label>
+              <div className={styles.passwordField}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={errors.password ? styles.error : ''}
+                  placeholder="Enter password"
+                />
+                <button
+                  type="button"
+                  className={styles.eyeButton}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  disabled={isSubmitting}
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
+              {errors.password && (
+                <span className={styles.errorMessage}>{errors.password}</span>
+              )}
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="confirmPassword">
+                Retype Password <span className={styles.required}>*</span>
+              </label>
+              <div className={styles.passwordField}>
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className={errors.confirmPassword ? styles.error : ''}
+                  placeholder="Retype password"
+                />
+                <button
+                  type="button"
+                  className={styles.eyeButton}
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  disabled={isSubmitting}
+                >
+                  {showConfirmPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
+              {errors.confirmPassword && (
+                <span className={styles.errorMessage}>{errors.confirmPassword}</span>
+              )}
             </div>
           </div>
 
           <div className={styles.formRow}>
             <div className={`${styles.formGroup} ${styles.fullWidth}`}>
-              <label htmlFor="comments">Additional Comments</label>
-              <textarea
-                id="comments"
-                name="comments"
-                value={formData.comments}
-                onChange={handleChange}
-                rows={4}
-                placeholder="Any additional information you'd like to share..."
-              />
+              <div className={styles.checkboxRow}>
+                <input
+                  type="checkbox"
+                  name="photoConsent"
+                  checked={formData.photoConsent}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                />
+                <label className={styles.checkboxLabel}>
+                  I consent to CUPL using my photos for promotional purposes
+                  <span className={styles.required}>*</span>
+                </label>
+              </div>
+              {errors.photoConsent && (
+                <span className={styles.errorMessage}>{errors.photoConsent}</span>
+              )}
             </div>
           </div>
 

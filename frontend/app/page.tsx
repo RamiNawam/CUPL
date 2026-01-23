@@ -7,6 +7,7 @@ import Section from '@/components/Section';
 import Button from '@/components/Button';
 import SignInModal from '@/components/SignInModal';
 import { getApiUrl, getImageUrl } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 import styles from './page.module.css';
 
 interface Event {
@@ -19,6 +20,7 @@ interface Event {
 }
 
 export default function Home() {
+  const { isAuthenticated } = useAuth();
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,13 +72,15 @@ export default function Home() {
           <p className={styles.tagline}>
             For students, by students. Join the premier padel competition across Canadian universities.
           </p>
-          <Button 
-            onClick={() => setIsSignInOpen(true)}
-            variant="primary" 
-            size="large"
-          >
-            Sign Up Now
-          </Button>
+          {!isAuthenticated && (
+            <Button 
+              onClick={() => setIsSignInOpen(true)}
+              variant="primary" 
+              size="large"
+            >
+              Sign Up Now
+            </Button>
+          )}
         </div>
       </section>
 

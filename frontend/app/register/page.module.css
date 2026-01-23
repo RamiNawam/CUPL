@@ -75,6 +75,70 @@
   transition: all 0.3s ease;
 }
 
+.passwordField {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordField input {
+  padding-right: 3rem;
+}
+
+.eyeButton {
+  position: absolute;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  padding: 0.25rem;
+}
+
+.eyeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.checkboxRow {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  column-gap: 0.5rem;
+  align-items: start;
+  width: 100%;
+}
+
+.checkboxRow input {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.checkboxLabel {
+  color: var(--color-white);
+  font-weight: 500;
+  font-size: 0.95rem;
+  margin: 0;
+  text-align: left;
+  line-height: 1.4;
+  display: block;
+}
+
+.dateInput {
+  color-scheme: dark;
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.dateInput::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.7;
+}
+
+.dateInput:focus::-webkit-calendar-picker-indicator {
+  opacity: 1;
+}
+
 .formGroup input:focus,
 .formGroup select:focus,
 .formGroup textarea:focus {
