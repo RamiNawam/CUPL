@@ -1,24 +1,21 @@
+import React from 'react';
 import Link from 'next/link';
 import styles from './Button.module.css';
 
-interface ButtonProps {
-  children: React.ReactNode;
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   href?: string;
-  onClick?: () => void;
   variant?: 'primary' | 'secondary' | 'outline';
   size?: 'small' | 'medium' | 'large';
-  type?: 'button' | 'submit';
-  className?: string;
 }
 
 export default function Button({
   children,
   href,
-  onClick,
   variant = 'primary',
   size = 'medium',
-  type = 'button',
   className = '',
+  ...props
 }: ButtonProps) {
   const baseClasses = `${styles.button} ${styles[variant]} ${styles[size]} ${className}`;
 
@@ -40,11 +37,7 @@ export default function Button({
   }
 
   return (
-    <button
-      type={type}
-      onClick={onClick}
-      className={baseClasses}
-    >
+      <button className={baseClasses} {...props}>
       {children}
     </button>
   );
