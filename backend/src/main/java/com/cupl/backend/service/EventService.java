@@ -4,9 +4,13 @@ import com.cupl.backend.dto.EventRequest;
 import com.cupl.backend.model.Event;
 import com.cupl.backend.repository.EventRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class EventService {
@@ -42,5 +46,13 @@ public class EventService {
         }
 
         return eventRepository.save(event);
+    }
+
+    public void deleteEvent(UUID id) {
+        UUID safeId = Objects.requireNonNull(id, "event id is required");
+        if (!eventRepository.existsById(safeId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found");
+        }
+        eventRepository.deleteById(safeId);
     }
 }

@@ -44,7 +44,7 @@ export default function AboutPage() {
       <Navbar />
       
       <Section className={styles.heroSection}>
-        <h1>About / Contact</h1>
+        <h1>About</h1>
         <p className={styles.subtitle}>
           Learn about CUPL and get in touch with us
         </p>
@@ -81,99 +81,6 @@ export default function AboutPage() {
             making padel accessible to students while maintaining the highest standards 
             of competition.
           </p>
-        </div>
-      </Section>
-
-      {/* Contact Section */}
-      <Section className={styles.contactSection}>
-        <h2 className={styles.sectionTitle}>Contact Us</h2>
-        <div className={styles.contactContent}>
-          <div className={styles.contactInfo}>
-            <div className={styles.infoCard}>
-              <h3>Email</h3>
-              <a href="mailto:info@cupl.ca" className={styles.emailLink}>
-                info@cupl.ca
-              </a>
-            </div>
-
-            <div className={styles.infoCard}>
-              <h3>Follow Us</h3>
-              <div className={styles.socialLinks}>
-                <a
-                  href="https://instagram.com/cupl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.socialLink}
-                >
-                  Instagram
-                </a>
-                <a
-                  href="https://linkedin.com/company/cupl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.socialLink}
-                >
-                  LinkedIn
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.formContainer}>
-            <h3>Send us a message</h3>
-            {isSuccess ? (
-              <div className={styles.successMessage}>
-                <p>Thank you for your message! We'll get back to you soon.</p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.formGroup}>
-                  <label htmlFor="name">Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="email">Email</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="message">Message</label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    rows={6}
-                    required
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="large"
-                  className={styles.submitButton}
-                >
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
-                </Button>
-              </form>
-            )}
-          </div>
         </div>
       </Section>
 

@@ -4,7 +4,9 @@ import { useState, useEffect, useMemo } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Section from '@/components/Section';
-import { getApiUrl, getImageUrl } from '@/lib/api';
+import Button from '@/components/Button';
+import { useAuth } from '@/contexts/AuthContext';
+import { getApiUrl, getImageUrl, fetchWithAuth } from '@/lib/api';
 import styles from './page.module.css';
 
 interface Event {
@@ -23,8 +25,19 @@ interface GroupedEvent {
 }
 
 export default function EventsPage() {
+  const { isAdmin, user } = useAuth();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    title: '',
+    date: '',
+    location: '',
+    description: '',
+    image: null as string | null,
+  });
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   useEffect(() => {
     fetchEvents();
@@ -43,6 +56,105 @@ export default function EventsPage() {
       console.error('Error fetching events:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setFormError('Please select a valid image file');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setFormError('Image must be less than 5MB');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      setFormData((prev) => ({ ...prev, image: result }));
+      setImagePreview(result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCreateEvent = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!isAdmin) return;
+
+    setIsSubmitting(true);
+    setFormError(null);
+
+    try {
+      const response = await fetchWithAuth(
+        '/api/events',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            title: formData.title,
+            date: formData.date,
+            location: formData.location,
+            description: formData.description,
+            image: formData.image,
+          }),
+        },
+        user?.token
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Failed to create event');
+      }
+
+      setFormData({
+        title: '',
+        date: '',
+        location: '',
+        description: '',
+        image: null,
+      });
+      setImagePreview(null);
+      fetchEvents();
+    } catch (error: any) {
+      setFormError(error.message || 'Failed to create event');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteEvent = async (eventId: string) => {
+    if (!isAdmin) return;
+    const confirmed = window.confirm('Delete this event?');
+    if (!confirmed) return;
+
+    try {
+      const response = await fetchWithAuth(
+        `/api/events/${eventId}`,
+        { method: 'DELETE' },
+        user?.token
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Failed to delete event');
+      }
+      fetchEvents();
+    } catch (error) {
+      console.error('Error deleting event:', error);
     }
   };
 
@@ -154,11 +266,95 @@ export default function EventsPage() {
       <Navbar />
       
       <Section className={styles.heroSection}>
-        <h1>CUPL Events</h1>
-        <p className={styles.subtitle}>
-          Join us for exciting padel tournaments, clinics, and competitions throughout the year
-        </p>
+        <div className={styles.heroContent}>
+          <div>
+            <h1>CUPL Events</h1>
+            <p className={styles.subtitle}>
+              Join us for exciting padel tournaments, clinics, and competitions throughout the year
+            </p>
+          </div>
+          {isAdmin && (
+            <Button href="#admin-tools" variant="primary" size="small">
+              Create Event
+            </Button>
+          )}
+        </div>
       </Section>
+
+      {isAdmin && (
+        <Section className={styles.adminSection} id="admin-tools">
+          <div className={styles.adminHeader}>
+            <h2>Admin Tools</h2>
+            <p>Create new events directly from this page.</p>
+          </div>
+          <form onSubmit={handleCreateEvent} className={styles.adminForm}>
+            {formError && <p className={styles.formError}>{formError}</p>}
+            <div className={styles.formGrid}>
+              <div className={styles.formField}>
+                <label htmlFor="title">Title</label>
+                <input
+                  id="title"
+                  name="title"
+                  type="text"
+                  value={formData.title}
+                  onChange={handleFormChange}
+                  required
+                />
+              </div>
+              <div className={styles.formField}>
+                <label htmlFor="date">Date</label>
+                <input
+                  id="date"
+                  name="date"
+                  type="text"
+                  value={formData.date}
+                  onChange={handleFormChange}
+                  placeholder="March 20, 2024"
+                  required
+                />
+              </div>
+            </div>
+            <div className={styles.formGrid}>
+              <div className={styles.formField}>
+                <label htmlFor="location">Location</label>
+                <input
+                  id="location"
+                  name="location"
+                  type="text"
+                  value={formData.location}
+                  onChange={handleFormChange}
+                  required
+                />
+              </div>
+              <div className={styles.formField}>
+                <label htmlFor="image">Event Image (optional)</label>
+                <input id="image" name="image" type="file" onChange={handleImageChange} />
+              </div>
+            </div>
+            {imagePreview && (
+              <div className={styles.imagePreview}>
+                <img src={imagePreview} alt="Event preview" />
+              </div>
+            )}
+            <div className={styles.formField}>
+              <label htmlFor="description">Description</label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleFormChange}
+                rows={4}
+                required
+              />
+            </div>
+            <div className={styles.formActions}>
+              <Button type="submit" variant="primary" size="small" disabled={isSubmitting}>
+                {isSubmitting ? 'Creating...' : 'Create Event'}
+              </Button>
+            </div>
+          </form>
+        </Section>
+      )}
 
       <Section className={styles.eventsSection}>
         {loading ? (
@@ -195,6 +391,17 @@ export default function EventsPage() {
                           <p className={styles.eventLocation}>📍 {event.location}</p>
                         )}
                         <p className={styles.eventDescription}>{event.description}</p>
+                        {isAdmin && (
+                          <div className={styles.eventActions}>
+                            <Button
+                              variant="outline"
+                              size="small"
+                              onClick={() => handleDeleteEvent(event.id)}
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}

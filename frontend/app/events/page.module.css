@@ -10,6 +10,13 @@
   background: linear-gradient(135deg, rgba(209, 22, 42, 0.1) 0%, rgba(0, 0, 0, 1) 100%);
 }
 
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
 .heroSection h1 {
   margin-bottom: var(--spacing-sm);
   color: var(--color-white);
@@ -26,6 +33,99 @@
 .eventsSection {
   background: var(--color-black);
   padding: var(--spacing-xl) 0;
+}
+
+.adminSection {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: var(--spacing-lg);
+  margin: var(--spacing-lg) auto;
+  max-width: 1200px;
+}
+
+.adminHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+}
+
+.adminHeader h2 {
+  color: var(--color-white);
+  margin: 0;
+}
+
+.adminHeader p {
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.adminForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formField label {
+  color: var(--color-white);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.formField input,
+.formField textarea {
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: var(--color-white);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.formField input:focus,
+.formField textarea:focus {
+  outline: none;
+  border-color: var(--color-red);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.formError {
+  color: var(--color-red);
+  font-size: 0.95rem;
+}
+
+.imagePreview {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-height: 300px;
+}
+
+.imagePreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .calendarContainer {
@@ -162,6 +262,12 @@
   flex: 1;
 }
 
+.eventActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--spacing-sm);
+}
+
 @media (max-width: 768px) {
   .eventsGrid,
   .eventsList {
@@ -192,5 +298,13 @@
 
   .eventsList {
     padding-left: 0;
+  }
+
+  .adminSection {
+    margin: var(--spacing-md);
+  }
+
+  .heroContent {
+    gap: var(--spacing-sm);
   }
 }

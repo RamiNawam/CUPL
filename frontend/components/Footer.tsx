@@ -12,13 +12,13 @@ export default function Footer() {
           </div>
           
           <div className={styles.links}>
-            <a href="mailto:info@cupl.ca" className={styles.email}>
-              info@cupl.ca
+            <a href="mailto:cupl.league@gmail.com" className={styles.email}>
+              cupl.league@gmail.com
             </a>
             
             <div className={styles.social}>
               <a
-                href="https://instagram.com/cupl"
+                href="https://www.instagram.com/cuplpadel"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -30,7 +30,7 @@ export default function Footer() {
               </a>
               
               <a
-                href="https://linkedin.com/company/cupl"
+                href="https://www.linkedin.com/company/cupleague"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"

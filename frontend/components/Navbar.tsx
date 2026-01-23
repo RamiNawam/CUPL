@@ -18,7 +18,7 @@ export default function Navbar() {
     { href: '/', label: 'Home' },
     { href: '/events', label: 'Events' },
     { href: '/sponsors', label: 'Sponsors' },
-    { href: '/about', label: 'About/Contact' },
+    { href: '/about', label: 'About' },
   ];
 
   // Add role-specific links
@@ -26,7 +26,6 @@ export default function Navbar() {
   if (isAdmin) {
     navLinks = [
       ...baseNavLinks,
-      { href: '/create-event', label: 'Create Event' },
       { href: '/create-club', label: 'Create Club Account' },
     ];
   } else if (isClub) {
