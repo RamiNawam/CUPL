@@ -23,18 +23,7 @@ interface FormData {
   comments: string;
 }
 
-interface FormErrors {
-  fullName?: string;
-  gender?: string;
-  dateOfBirth?: string;
-  university?: string;
-  universityTeam?: string;
-  email?: string;
-  password?: string;
-  phone?: string;
-  medicalConditions?: string;
-  comments?: string;
-}
+type FormErrors = Partial<Record<keyof FormData, string>>;
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -70,15 +59,16 @@ export default function RegisterPage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+    const field = name as keyof FormData;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
     // Clear error when user starts typing
-    if (errors[name]) {
+    if (errors[field]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
-        delete newErrors[name];
+        delete newErrors[field];
         return newErrors;
       });
     }
