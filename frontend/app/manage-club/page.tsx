@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Section from '@/components/Section';
 import Button from '@/components/Button';
+import { fetchWithAuth } from '@/lib/api';
 import styles from './page.module.css';
 
 interface Player {
