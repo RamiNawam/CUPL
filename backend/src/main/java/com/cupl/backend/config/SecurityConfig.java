@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/health").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/events").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/events").hasAnyRole("ADMIN")
                 .requestMatchers("/api/events/**").hasAnyRole("ADMIN")
