@@ -1,5 +1,6 @@
 package com.cupl.backend.service;
 
+import com.cupl.backend.dto.ErrorResponse;
 import com.cupl.backend.dto.PlayerRequest;
 import com.cupl.backend.model.Club;
 import com.cupl.backend.model.Player;
@@ -34,12 +35,11 @@ public class PlayerService {
     public Player createPlayer(PlayerRequest request) {
         String email = request.getEmail().toLowerCase().trim();
 
-        if (playerRepository.existsByEmail(email)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
-        }
-
-        if (userRepository.existsByEmail(email)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
+        if (playerRepository.existsByEmail(email) || userRepository.existsByEmail(email)) {
+            throw new ResponseStatusException(
+                HttpStatus.CONFLICT, 
+                ErrorResponse.EMAIL_ALREADY_EXISTS
+            );
         }
 
         Player player = new Player();

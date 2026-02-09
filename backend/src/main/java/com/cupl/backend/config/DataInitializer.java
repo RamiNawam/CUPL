@@ -73,71 +73,67 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         // Initialize McGill Club
-        String mcgillClubEmail = "mcgill@gmail.com";
+        String mcgillClubEmail = "mcgillpadelclub@ssmu.ca";
+        String mcgillClubPassword = "ILOVEARTHUR";
+        String oldMcGillClubEmail = "mcgill@gmail.com";
+        
+        // Handle migration from old email to new email
+        Club oldClub = clubRepository.findByEmail(oldMcGillClubEmail).orElse(null);
+        if (oldClub != null && !clubRepository.existsByEmail(mcgillClubEmail)) {
+            // Update existing club to new email
+            oldClub.setEmail(mcgillClubEmail);
+            clubRepository.save(oldClub);
+            System.out.println("Updated McGill club email from " + oldMcGillClubEmail + " to " + mcgillClubEmail);
+        }
+        
+        // Handle user account migration
+        User oldUser = userRepository.findByEmail(oldMcGillClubEmail).orElse(null);
+        if (oldUser != null) {
+            if (!userRepository.existsByEmail(mcgillClubEmail)) {
+                // Update existing user to new email
+                oldUser.setEmail(mcgillClubEmail);
+                oldUser.setPassword(passwordEncoder.encode(mcgillClubPassword));
+                oldUser.setRole(UserRole.CLUB);
+                userRepository.save(oldUser);
+                System.out.println("Updated McGill club user email and password");
+            } else {
+                // New email already exists, delete old user
+                userRepository.delete(oldUser);
+                System.out.println("Deleted old McGill club user with email: " + oldMcGillClubEmail);
+            }
+        }
+        
         Club mcgillClub = null;
         if (!clubRepository.existsByEmail(mcgillClubEmail)) {
-            if (!userRepository.existsByEmail(mcgillClubEmail)) {
-                mcgillClub = new Club();
-                mcgillClub.setName("McGill Padel Club");
-                mcgillClub.setEmail(mcgillClubEmail);
-                mcgillClub = clubRepository.save(mcgillClub);
-                System.out.println("Initialized club: " + mcgillClub.getName());
-
-                // Create User account for McGill club
-                User clubUser = new User();
-                clubUser.setEmail(mcgillClubEmail);
-                clubUser.setPassword(passwordEncoder.encode("mcgill"));
-                clubUser.setRole(UserRole.CLUB);
-                userRepository.save(clubUser);
-                System.out.println("Initialized club user: " + mcgillClubEmail);
-
-                // Create default teams for McGill
-                for (int i = 1; i <= 3; i++) {
-                    Team menTeam = new Team();
-                    menTeam.setClubId(mcgillClub.getId());
-                    menTeam.setType(Team.TeamType.MEN);
-                    menTeam.setTeamNumber(i);
-                    teamRepository.save(menTeam);
-                }
-
-                Team womenTeam = new Team();
-                womenTeam.setClubId(mcgillClub.getId());
-                womenTeam.setType(Team.TeamType.WOMEN);
-                womenTeam.setTeamNumber(1);
-                teamRepository.save(womenTeam);
-                System.out.println("Initialized teams for McGill club");
-            }
+            mcgillClub = new Club();
+            mcgillClub.setName("McGill Padel Club");
+            mcgillClub.setEmail(mcgillClubEmail);
+            mcgillClub = clubRepository.save(mcgillClub);
+            System.out.println("Initialized club: " + mcgillClub.getName());
         } else {
             mcgillClub = clubRepository.findByEmail(mcgillClubEmail).orElse(null);
             System.out.println("McGill club already exists");
-            
-            // Ensure user account exists even if club already exists
-            if (mcgillClub != null && !userRepository.existsByEmail(mcgillClubEmail)) {
-                User clubUser = new User();
-                clubUser.setEmail(mcgillClubEmail);
-                clubUser.setPassword(passwordEncoder.encode("mcgill"));
-                clubUser.setRole(UserRole.CLUB);
-                userRepository.save(clubUser);
-                System.out.println("Initialized club user: " + mcgillClubEmail);
+        }
+        
+        // Ensure user account exists with correct credentials
+        ensureUser(mcgillClubEmail, mcgillClubPassword, UserRole.CLUB);
+        
+        // Ensure teams exist
+        if (mcgillClub != null && teamRepository.findByClubId(mcgillClub.getId()).isEmpty()) {
+            for (int i = 1; i <= 3; i++) {
+                Team menTeam = new Team();
+                menTeam.setClubId(mcgillClub.getId());
+                menTeam.setType(Team.TeamType.MEN);
+                menTeam.setTeamNumber(i);
+                teamRepository.save(menTeam);
             }
-            
-            // Ensure teams exist
-            if (mcgillClub != null && teamRepository.findByClubId(mcgillClub.getId()).isEmpty()) {
-                for (int i = 1; i <= 3; i++) {
-                    Team menTeam = new Team();
-                    menTeam.setClubId(mcgillClub.getId());
-                    menTeam.setType(Team.TeamType.MEN);
-                    menTeam.setTeamNumber(i);
-                    teamRepository.save(menTeam);
-                }
 
-                Team womenTeam = new Team();
-                womenTeam.setClubId(mcgillClub.getId());
-                womenTeam.setType(Team.TeamType.WOMEN);
-                womenTeam.setTeamNumber(1);
-                teamRepository.save(womenTeam);
-                System.out.println("Initialized teams for McGill club");
-            }
+            Team womenTeam = new Team();
+            womenTeam.setClubId(mcgillClub.getId());
+            womenTeam.setType(Team.TeamType.WOMEN);
+            womenTeam.setTeamNumber(1);
+            teamRepository.save(womenTeam);
+            System.out.println("Initialized teams for McGill club");
         }
 
         // Initialize 5 McGill players

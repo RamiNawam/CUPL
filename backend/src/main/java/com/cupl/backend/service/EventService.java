@@ -48,6 +48,30 @@ public class EventService {
         return eventRepository.save(event);
     }
 
+    public Event updateEvent(UUID id, EventRequest request) {
+        UUID safeId = Objects.requireNonNull(id, "event id is required");
+        Event event = eventRepository.findById(safeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+
+        event.setTitle(request.getTitle());
+        event.setDate(request.getDate());
+        event.setLocation(request.getLocation());
+        event.setDescription(request.getDescription());
+
+        // Update image if provided
+        if (request.getImage() != null && !request.getImage().isEmpty()) {
+            try {
+                String imagePath = imageService.saveBase64Image(request.getImage(), "events");
+                event.setImage(imagePath);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to save event image", e);
+            }
+        }
+        // If image is null/empty, keep existing image (don't delete it)
+
+        return eventRepository.save(event);
+    }
+
     public void deleteEvent(UUID id) {
         UUID safeId = Objects.requireNonNull(id, "event id is required");
         if (!eventRepository.existsById(safeId)) {

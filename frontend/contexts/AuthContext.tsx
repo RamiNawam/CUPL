@@ -44,23 +44,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (!response.ok) {
-        let errorMessage = 'Invalid email or password';
-        try {
-          const errorText = await response.text();
-          if (errorText && errorText.trim()) {
-            // Try to parse as JSON first
-            try {
-              const errorJson = JSON.parse(errorText);
-              errorMessage = errorJson.message || errorMessage;
-            } catch {
-              // If not JSON, use the text directly
-              errorMessage = errorText;
-            }
-          }
-        } catch {
-          // Use default error message
-        }
-        throw new Error(errorMessage);
+        // Always return generic error message for login (security best practice)
+        throw new Error('Invalid email or password.');
       }
 
       const data = await response.json();

@@ -159,6 +159,21 @@
   min-height: 100px;
 }
 
+.linkButton {
+  color: var(--color-red);
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
+  padding: 0;
+  margin: 0;
+}
+
+.linkButton:hover {
+  color: rgba(209, 22, 42, 0.8);
+}
+
 .errorMessage {
   color: var(--color-red);
   font-size: 0.875rem;

@@ -25,14 +25,20 @@ export default function Home() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const clubs = [
-    { name: 'McGill Padel Club', logo: '/club-logos/mcgill.png' },
-    { name: 'UofT Padel', logo: '/club-logos/UofT PADEL.png' },
-    { name: 'UTM Padel', logo: '/club-logos/UTM PADEL.png' },
-    { name: 'HEC Montreal Padel Club', logo: '/club-logos/HEC Montreal PAEDL CLUB.png' },
-    { name: 'Polysports Padel', logo: '/club-logos/polysports.png' },
-    { name: 'Concordia Padel Club', logo: '/club-logos/Concordia.png' },
-  ];
+  const clubsByRegion = {
+    montreal: [
+      { name: 'McGill Padel Club', logo: '/club-logos/mcgill.png' },
+      { name: 'HEC Montreal Padel Club', logo: '/club-logos/HEC Montreal PAEDL CLUB.png' },
+      { name: 'Concordia Padel Club', logo: '/club-logos/Concordia.png' },
+    ],
+    ontario: [
+      { name: 'UofT Padel', logo: '/club-logos/UofT PADEL.png' },
+      { name: 'UTM Padel', logo: '/club-logos/UTM PADEL.png' },
+      { name: 'TMU Padel', logo: '/club-logos/tmu.png' },
+      { name: 'McMaster Padel', logo: '/club-logos/mcmaster.png' },
+      { name: 'Polysports Padel', logo: '/club-logos/polysports.png' },
+    ],
+  };
 
   useEffect(() => {
     fetchEvents();
@@ -87,25 +93,57 @@ export default function Home() {
       {/* Participating Clubs */}
       <Section className={styles.universitiesSection}>
         <h2 className={styles.sectionTitle}>Participating Clubs</h2>
-        <div className={styles.universitiesGrid}>
-          {clubs.map((club) => (
-            <div key={club.name} className={styles.universityCard}>
-              <div className={styles.logoContainer}>
-                {club.logo ? (
-                  <img 
-                    src={club.logo} 
-                    alt={club.name} 
-                    className={styles.clubLogo}
-                  />
-                ) : (
-                  <div className={styles.logoPlaceholder}>
-                    {club.name.charAt(0)}
+        
+        <div className={styles.regionsContainer}>
+          {/* Montreal Section */}
+          <div className={styles.regionSection}>
+            <h3 className={styles.regionTitle}>Montreal</h3>
+            <div className={styles.universitiesGrid}>
+              {clubsByRegion.montreal.map((club) => (
+                <div key={club.name} className={styles.universityCard}>
+                  <div className={styles.logoContainer}>
+                    {club.logo ? (
+                      <img 
+                        src={club.logo} 
+                        alt={club.name} 
+                        className={styles.clubLogo}
+                      />
+                    ) : (
+                      <div className={styles.logoPlaceholder}>
+                        {club.name.charAt(0)}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              <p className={styles.clubName}>{club.name}</p>
+                  <p className={styles.clubName}>{club.name}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* Ontario Section */}
+          <div className={styles.regionSection}>
+            <h3 className={styles.regionTitle}>Ontario</h3>
+            <div className={styles.universitiesGrid}>
+              {clubsByRegion.ontario.map((club) => (
+                <div key={club.name} className={styles.universityCard}>
+                  <div className={styles.logoContainer}>
+                    {club.logo ? (
+                      <img 
+                        src={club.logo} 
+                        alt={club.name} 
+                        className={styles.clubLogo}
+                      />
+                    ) : (
+                      <div className={styles.logoPlaceholder}>
+                        {club.name.charAt(0)}
+                      </div>
+                    )}
+                  </div>
+                  <p className={styles.clubName}>{club.name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </Section>
 
@@ -158,6 +196,12 @@ export default function Home() {
           View All Sponsors
         </Button>
       </Section>
+
+      <div className={styles.disclaimer}>
+        <p className={styles.disclaimerText}>
+          * The clubs listed are not official university clubs and are for demonstration purposes only.
+        </p>
+      </div>
 
       <Footer />
       <SignInModal isOpen={isSignInOpen} onClose={() => setIsSignInOpen(false)} />

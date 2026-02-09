@@ -38,6 +38,7 @@ export default function EventsPage() {
     image: null as string | null,
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
 
   useEffect(() => {
     fetchEvents();
@@ -100,24 +101,37 @@ export default function EventsPage() {
     setFormError(null);
 
     try {
+      const url = editingEvent ? `/api/events/${editingEvent.id}` : '/api/events';
+      const method = editingEvent ? 'PUT' : 'POST';
+
+      // If editing and no new image uploaded, don't send image field (keep existing)
+      const requestBody: any = {
+        title: formData.title,
+        date: formData.date,
+        location: formData.location,
+        description: formData.description,
+      };
+      
+      // Only include image if it's a new upload or creating new event
+      if (formData.image) {
+        requestBody.image = formData.image;
+      } else if (!editingEvent) {
+        // For new events, image can be null
+        requestBody.image = null;
+      }
+
       const response = await fetchWithAuth(
-        '/api/events',
+        url,
         {
-          method: 'POST',
-          body: JSON.stringify({
-            title: formData.title,
-            date: formData.date,
-            location: formData.location,
-            description: formData.description,
-            image: formData.image,
-          }),
+          method,
+          body: JSON.stringify(requestBody),
         },
         user?.token
       );
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(errorText || 'Failed to create event');
+        throw new Error(errorText || `Failed to ${editingEvent ? 'update' : 'create'} event`);
       }
 
       setFormData({
@@ -128,12 +142,46 @@ export default function EventsPage() {
         image: null,
       });
       setImagePreview(null);
+      setEditingEvent(null);
       fetchEvents();
     } catch (error: any) {
-      setFormError(error.message || 'Failed to create event');
+      let errorMessage = `Failed to ${editingEvent ? 'update' : 'create'} event`;
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error instanceof TypeError && error.message.includes('fetch')) {
+        errorMessage = 'Unable to connect to server. Please make sure the backend is running.';
+      }
+      setFormError(errorMessage);
+      console.error('Event error:', error);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleEditEvent = (event: Event) => {
+    setEditingEvent(event);
+    setFormData({
+      title: event.title,
+      date: event.date,
+      location: event.location,
+      description: event.description,
+      image: null, // Don't pre-fill image, user can upload new one
+    });
+    setImagePreview(event.image ? getImageUrl(event.image) : null);
+    // Scroll to form
+    document.getElementById('admin-tools')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingEvent(null);
+    setFormData({
+      title: '',
+      date: '',
+      location: '',
+      description: '',
+      image: null,
+    });
+    setImagePreview(null);
   };
 
   const handleDeleteEvent = async (eventId: string) => {
@@ -285,7 +333,7 @@ export default function EventsPage() {
         <Section className={styles.adminSection} id="admin-tools">
           <div className={styles.adminHeader}>
             <h2>Admin Tools</h2>
-            <p>Create new events directly from this page.</p>
+            <p>{editingEvent ? `Editing: ${editingEvent.title}` : 'Create new events directly from this page.'}</p>
           </div>
           <form onSubmit={handleCreateEvent} className={styles.adminForm}>
             {formError && <p className={styles.formError}>{formError}</p>}
@@ -349,8 +397,13 @@ export default function EventsPage() {
             </div>
             <div className={styles.formActions}>
               <Button type="submit" variant="primary" size="small" disabled={isSubmitting}>
-                {isSubmitting ? 'Creating...' : 'Create Event'}
+                {isSubmitting ? (editingEvent ? 'Updating...' : 'Creating...') : (editingEvent ? 'Update Event' : 'Create Event')}
               </Button>
+              {editingEvent && (
+                <Button type="button" variant="outline" size="small" onClick={handleCancelEdit}>
+                  Cancel
+                </Button>
+              )}
             </div>
           </form>
         </Section>
@@ -393,6 +446,13 @@ export default function EventsPage() {
                         <p className={styles.eventDescription}>{event.description}</p>
                         {isAdmin && (
                           <div className={styles.eventActions}>
+                            <Button
+                              variant="outline"
+                              size="small"
+                              onClick={() => handleEditEvent(event)}
+                            >
+                              Edit
+                            </Button>
                             <Button
                               variant="outline"
                               size="small"

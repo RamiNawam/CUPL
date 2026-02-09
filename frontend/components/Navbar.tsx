@@ -17,6 +17,7 @@ export default function Navbar() {
   const baseNavLinks = [
     { href: '/', label: 'Home' },
     { href: '/events', label: 'Events' },
+    { href: '/standings', label: 'Standings' },
     { href: '/sponsors', label: 'Sponsors' },
     { href: '/about', label: 'About' },
   ];
