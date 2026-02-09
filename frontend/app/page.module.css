@@ -276,6 +276,21 @@
   padding: var(--spacing-md) 0;
 }
 
+.sponsorLogoPreview {
+  max-height: 80px;
+  max-width: 150px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: brightness(0.9);
+  transition: all 0.3s ease;
+}
+
+.sponsorLogoPreview:hover {
+  filter: brightness(1);
+  transform: scale(1.05);
+}
+
 .sponsorPlaceholder {
   padding: var(--spacing-md) var(--spacing-lg);
   background: rgba(255, 255, 255, 0.05);

@@ -188,9 +188,11 @@ export default function Home() {
       <Section className={styles.sponsorsPreview}>
         <h2 className={styles.sectionTitle}>Our Sponsors</h2>
         <div className={styles.sponsorStrip}>
-          <div className={styles.sponsorPlaceholder}>Sponsor Logo 1</div>
-          <div className={styles.sponsorPlaceholder}>Sponsor Logo 2</div>
-          <div className={styles.sponsorPlaceholder}>Sponsor Logo 3</div>
+          <img src="/sponsors/PadelGo.png" alt="PadelGo" className={styles.sponsorLogoPreview} />
+          <img src="/sponsors/PadelFVR.png" alt="PadelFVR" className={styles.sponsorLogoPreview} />
+          <img src="/sponsors/Padel22.png" alt="Padel22" className={styles.sponsorLogoPreview} />
+          <img src="/sponsors/SchoolYardSocial.png" alt="SchoolYardSocial" className={styles.sponsorLogoPreview} />
+          <div className={styles.sponsorPlaceholder}>Bounce</div>
         </div>
         <Button href="/sponsors" variant="outline" size="medium" className={styles.viewAllButton}>
           View All Sponsors

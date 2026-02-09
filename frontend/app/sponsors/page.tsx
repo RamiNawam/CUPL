@@ -15,8 +15,50 @@ interface SponsorFormData {
   message: string;
 }
 
+interface Sponsor {
+  name: string;
+  logo: string | null;
+  description: string;
+  details: string;
+}
+
+const sponsors: Sponsor[] = [
+  {
+    name: 'PadelGo',
+    logo: '/sponsors/PadelGo.png',
+    description: '', // Will be shown in modal
+    details: 'PadelGo is a leading padel facility and community hub dedicated to growing the sport across Canada. They provide world-class courts and training programs for players of all levels.',
+  },
+  {
+    name: 'PadelFVR',
+    logo: '/sponsors/PadelFVR.png',
+    description: '', // Will be shown in modal
+    details: 'PadelFVR brings the excitement of padel to communities nationwide, offering premium facilities and fostering a vibrant padel culture for enthusiasts and newcomers alike.',
+  },
+  {
+    name: 'Padel22',
+    logo: '/sponsors/Padel22.png',
+    description: '', // Will be shown in modal
+    details: 'Padel22 is committed to excellence in padel, providing top-tier facilities and supporting the development of competitive players and university teams.',
+  },
+  {
+    name: 'SchoolYardSocial',
+    logo: '/sponsors/SchoolYardSocial.png',
+    description: '', // Will be shown in modal
+    details: 'SchoolYardSocial empowers student communities through sports and social engagement, creating opportunities for students to connect, compete, and grow together.',
+  },
+  {
+    name: 'Bounce',
+    logo: null,
+    description: '', // Will be shown in modal
+    details: 'Bounce is dedicated to supporting the next generation of padel players, providing resources and opportunities for young athletes to excel in the sport.',
+  },
+];
+
 export default function SponsorsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSponsorModalOpen, setIsSponsorModalOpen] = useState(false);
+  const [selectedSponsor, setSelectedSponsor] = useState<Sponsor | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState<SponsorFormData>({
@@ -27,21 +69,6 @@ export default function SponsorsPage() {
     message: '',
   });
   const [errors, setErrors] = useState<Partial<SponsorFormData>>({});
-
-  const sponsors = [
-    {
-      name: 'Sponsor 1',
-      description: 'Supporting student athletes and the growth of padel in Canada.',
-    },
-    {
-      name: 'Sponsor 2',
-      description: 'Committed to excellence in university sports.',
-    },
-    {
-      name: 'Sponsor 3',
-      description: 'Proud partner of CUPL and student athletics.',
-    },
-  ];
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -144,9 +171,29 @@ export default function SponsorsPage() {
           {sponsors.map((sponsor, index) => (
             <div key={index} className={styles.sponsorCard}>
               <div className={styles.sponsorLogo}>
-                {sponsor.name}
+                {sponsor.logo ? (
+                  <img 
+                    src={sponsor.logo} 
+                    alt={sponsor.name} 
+                    className={styles.sponsorLogoImage}
+                  />
+                ) : (
+                  <div className={styles.sponsorLogoPlaceholder}>
+                    {sponsor.name}
+                  </div>
+                )}
               </div>
-              <p className={styles.sponsorDescription}>{sponsor.description}</p>
+              <Button
+                onClick={() => {
+                  setSelectedSponsor(sponsor);
+                  setIsSponsorModalOpen(true);
+                }}
+                variant="outline"
+                size="small"
+                className={styles.seeMoreButton}
+              >
+                See More
+              </Button>
             </div>
           ))}
         </div>
@@ -168,7 +215,39 @@ export default function SponsorsPage() {
         </Button>
       </Section>
 
-      {/* Modal */}
+      {/* Sponsor Details Modal */}
+      {isSponsorModalOpen && selectedSponsor && (
+        <div className={styles.modalOverlay} onClick={() => setIsSponsorModalOpen(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <button
+              className={styles.closeButton}
+              onClick={() => setIsSponsorModalOpen(false)}
+              aria-label="Close modal"
+            >
+              ×
+            </button>
+            <div className={styles.sponsorModalContent}>
+              <div className={styles.sponsorModalLogo}>
+                {selectedSponsor.logo ? (
+                  <img 
+                    src={selectedSponsor.logo} 
+                    alt={selectedSponsor.name} 
+                    className={styles.sponsorModalLogoImage}
+                  />
+                ) : (
+                  <div className={styles.sponsorModalLogoPlaceholder}>
+                    {selectedSponsor.name}
+                  </div>
+                )}
+              </div>
+              <h2 className={styles.sponsorModalTitle}>{selectedSponsor.name}</h2>
+              <p className={styles.sponsorModalDetails}>{selectedSponsor.details}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Become a Sponsor Modal */}
       {isModalOpen && (
         <div className={styles.modalOverlay} onClick={closeModal}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
