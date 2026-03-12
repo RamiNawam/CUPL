@@ -7,9 +7,7 @@
 /* Hero Section */
 .heroSection {
   text-align: center;
-  padding: 120px 0;
   background-color: #000;
-  min-height: 100vh;
   /* CRITICAL: These two lines keep the background image contained! */
   position: relative;
   overflow: hidden;
@@ -45,13 +43,13 @@
 }
 
 /* 1st, 3rd, 5th... - RED BACKGROUND & FLIPPED */
-.sponsorFeature:nth-child(odd) {
+.sponsorFeature:nth-child(even) {
   background-color: #000000; /* #D1162A */
   flex-direction: row-reverse;
 }
 
 /* 2nd, 4th, 6th... - BLACK BACKGROUND & NORMAL */
-.sponsorFeature:nth-child(even) {
+.sponsorFeature:nth-child(odd) {
   background-color: var(--color-red);
   flex-direction: row;
 }
@@ -64,7 +62,7 @@
 
 .brandHeader {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   margin-bottom: 25px; /* Slightly tighter to connect with the text */
   min-height: 80px;
@@ -77,7 +75,7 @@
   max-height: 90px;  /* Keeps tall/square logos in check */
   object-fit: contain;
   transition: transform 0.3s ease; /* Smooth animation for hover */
-  transform-origin: left center; /* Scales from the left so it doesn't shift */
+  transform-origin: center center; /* Scales from the left so it doesn't shift */
 }
 
 /* Adds a slight zoom effect when users hover over the logo */
@@ -93,11 +91,17 @@
   margin: 0;
 }
 
-.descriptionText {
+/* .descriptionText {
   line-height: 1.8;
   color: rgba(255, 255, 255, 0.9);
   font-size: 1.1rem;
   margin-bottom: 35px;
+} */
+ .descriptionText {
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  margin-bottom: 0; /* Changed from 35px so the bottom padding of the grey box handles the spacing */
 }
 
 /* Action Buttons */
@@ -125,6 +129,16 @@
 
 .subBtn {
   flex: 1;
+}
+
+.greyBox {
+  /* Using a translucent white creates a nice glassy dark grey that 
+     looks great on both your black and red backgrounds! */
+  background-color: rgba(134, 123, 123); 
+  border-radius: 20px;
+  padding: 40px 30px;
+  margin-bottom: 25px; /* Pushes the action buttons down */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Optional: adds a crisp edge */
 }
 
 /* Right/Left Image Gallery Grid */
@@ -182,14 +196,21 @@
     text-align: center;
   }
 
-  .brandHeader {
+  /*.brandHeader {
     margin: 0 auto 30px;
     justify-content: center;
-  }
+  }*/
+  .brandHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px; /* Reduced slightly since the box adds padding */
+  min-height: 80px;
+}
 
-  .mainLogo {
+  /* .mainLogo {
     transform-origin: center center;
-  }
+  } */
 
   .smallImages {
     height: auto;

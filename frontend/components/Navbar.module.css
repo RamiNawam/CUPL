@@ -1,4 +1,4 @@
-.navbar {
+/* .navbar {
   position: sticky;
   top: 0;
   background: var(--color-black);
@@ -28,6 +28,48 @@
 
 .logo:hover {
   color: var(--color-red);
+} */
+ .navbar {
+  position: sticky;
+  top: 0;
+  background: var(--color-black);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1000;
+  padding: 1rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* The circular container */
+.logoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;      /* Adjust circle size here */
+  height: 50px;     /* Must exactly match width for a perfect circle */
+  border-radius: 50%; /* Makes the container a circle */
+  overflow: hidden;   /* Crops anything outside the circle */
+  margin-right: var(--spacing-lg);
+  transition: opacity 0.2s ease;
+  background-color: var(--color-white); /* Helpful if your logo has a transparent background */
+}
+
+.logoContainer:hover {
+  opacity: 0.8;
+}
+
+/* The zoomed-in image */
+.logoImage {
+  object-position: center;
+  object-fit: cover;
+  transform: scale(3.4); 
 }
 
 .navLinks {

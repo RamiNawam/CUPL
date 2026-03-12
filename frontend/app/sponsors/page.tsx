@@ -25,7 +25,9 @@ interface SponsorFormData {
 interface Sponsor {
   name: string;
   logo: string | null;
-  details: string; // This is the 'blurb' under the logo
+  details: string; // This is the 'blurb' under the logo'
+  website: string;
+  instagram: string;
   images: string[];
 }
 
@@ -33,39 +35,51 @@ const sponsors: Sponsor[] = [
 
   {
     name: 'Ernest',
-    logo: '/sponsors/Ernest_bdremoved.png',
+    logo: '/sponsors/ErnestLogoBR.png',
     details: 'Our official cournt infrastructure partner, bringing innovative Italian-designed courts, and high-end European craftsmanship together to create a unique Padel experience. Built around patented fiberglass structures, their solutions support flexible installations and drive innovation across the padel ecosystem.',
+    website: 'https://www.ernestpadel.com/',
+    instagram: 'https://www.instagram.com/ernest.padel/', 
     images: ['/images/Ernest pic.jpeg', "/images/Ernest pic 2.png"]
   },
   {
     name: 'SchoolYardSocial',
     logo: '/sponsors/SYS_bdremoved.png',
     details: 'Schoolyard Social is a Brooklyn-based startup redefining connected play with competition tech that gets you off your phone. Their all-in-one app is a live tournament marketplace that powers grassroots sports and skills-based tournaments — from beer pong leagues to neighborhood bakeoffs — connecting hosts, venues, sponsors, and participants. Schoolyard Social turns everyday players into champions through live, local, cash-prize competitions, making it easy for anyone to organize and participate in tournaments that revive community through real-life competitive play.',
+    website: 'https://www.schoolyardsocial.vip/',
+    instagram: 'https://www.instagram.com/schoolyardsocial/', 
     images: ['/images/SYS1.jpeg', "/images/SYS2.jpeg"]
   },
   {
     name: 'Padel22',
-    logo: '/sponsors/Padel22_bdremoved.png',
+    logo: '/sponsors/Padel22LogoBR.png',
     details: 'Padel22 is committed to excellence in padel, providing top-tier facilities and supporting the development of competitive players and university teams.',
+    website: 'https://www.padel22.com/',
+    instagram: 'https://www.instagram.com/padel22global/', 
     images: ['/images/Padel22.jpeg', "/images/Padel22.2.jpg"]
   },
   {
-    name: 'BlueZone Courts',
-    logo: '/sponsors/Bluezone_bdremoved.png',
-    details: 'Our Official Toronto hosting partner, providing the on-court home for CUPL league matches in the city - supporting a competitive and welcoming environment where university players can compete, connect, and contribute to the continued growth of the student padel community.',
-    images: ['/images/BlueZone1.jpg', "/images/BlueZone2.jpg"]
+    name: 'PadelGo',
+    logo: '/sponsors/PadelGoLogoBR.png',
+    details: 'PadelGo is a leading padel facility and community hub dedicated to growing the sport across Canada. They provide world-class courts and training programs for players of all levels.',
+    website: 'https://padelgo.ca/?srsltid=AfmBOoqnXHTCeediBtPqKqlqnd_wMQTiiYxpZ5SbGVxzXs8KjUDpiphr',
+    instagram: 'https://www.instagram.com/padelgocanada/', 
+    images: ['/images/PadelGo1.jpg', '/images/PadelGo2.jpg']
   },
   {
     name: 'PadelFVR',
-    logo: '/sponsors/PadelFVR_bdremoved.png',
+    logo: '/sponsors/PadelFVRLogoBR.png',
     details: 'PadelFVR brings the excitement of padel to communities nationwide, offering premium facilities and fostering a vibrant padel culture for enthusiasts and newcomers alike.',
+    website: 'https://www.padelfvr.ca/',
+    instagram: 'https://www.instagram.com/padelfvr/', 
     images: ['/images/PadelFVR.JPG', "/images/PadelFVR2.JPG"]
   },
-  {
-    name: 'PadelGo',
-    logo: '/sponsors/Padelgo_bdremoved.png',
-    details: 'PadelGo is a leading padel facility and community hub dedicated to growing the sport across Canada. They provide world-class courts and training programs for players of all levels.',
-    images: []
+    {
+    name: 'BlueZone Courts',
+    logo: '/sponsors/BlueZoneLogoBR.png',
+    details: 'Our Official Toronto hosting partner, providing the on-court home for CUPL league matches in the city - supporting a competitive and welcoming environment where university players can compete, connect, and contribute to the continued growth of the student padel community.',
+    website: 'https://bluezonecourts.com/',
+    instagram: 'https://www.instagram.com/bluezonecourts/', 
+    images: ['/images/BlueZone1.jpg', "/images/BlueZone2.jpg"]
   },
 
 ];
@@ -175,22 +189,7 @@ export default function SponsorsPage() {
       <Navbar />
       <Section className={styles.heroSection} style={{ position: 'relative', overflow: 'hidden' }}>
         {/* --- BLURRY BACKGROUND LAYER --- */}
-        <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              backgroundImage: "url('/images/sponsortitlebackground.JPG')",
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              filter: 'blur(1px) brightness(70%)',
-              transform: 'scale(1.1)',
-              zIndex: 1,
-            }}
-        />
+        
 
         {/* --- FOREGROUND TEXT LAYER --- */}
         <div style={{ position: 'relative', zIndex: 2 }}>
@@ -207,24 +206,54 @@ export default function SponsorsPage() {
               <div key={index} className={styles.sponsorFeature}>
                 {/* Left Side: Info */}
                 <div className={styles.sponsorInfo}>
-                  <div className={styles.brandHeader}>
-                    {sponsor.logo ? (
-                        <img src={sponsor.logo} alt={sponsor.name} className={styles.mainLogo} />
-                    ) : (
-                        <h2 className={styles.placeholderName}>{sponsor.name}</h2>
-                    )}
-                  </div>
+  
+                  {/* NEW: Wrapper for the grey box */}
+                  <div className={styles.greyBox}>
+                    <div className={styles.brandHeader}>
+                      {sponsor.logo ? (
+                          <img src={sponsor.logo} alt={sponsor.name} className={styles.mainLogo} />
+                      ) : (
+                          <h2 className={styles.placeholderName}>{sponsor.name}</h2>
+                      )}
+                    </div>
 
-                  <div className={styles.textContent}>
                     <p className={styles.descriptionText}>{sponsor.details}</p>
-                    <div className={styles.actionButtons}>
-                      <Button variant="primary" className={styles.visitBtn}>VISIT →</Button>
-                      <div className={styles.socialRow}>
-                        <Button variant="outline" className={styles.subBtn}>INSTAGRAM →</Button>
-                        <Button variant="outline" className={styles.subBtn}>EMAIL →</Button>
-                      </div>
+                  </div>
+                  <div className={styles.actionButtons}>
+                    {sponsor.website && (
+                      <Button 
+                        variant="primary" 
+                        className={styles.visitBtn}
+                        onClick={() => window.open(sponsor.website, '_blank', 'noopener,noreferrer')}
+                      >
+                        VISIT →
+                      </Button>
+                    )}
+                    
+                    <div className={styles.socialRow}>
+                      {sponsor.instagram && (
+                        <Button 
+                          variant="outline" 
+                          className={styles.subBtn}
+                          onClick={() => window.open(sponsor.instagram, '_blank', 'noopener,noreferrer')}
+                        >
+                          INSTAGRAM →
+                        </Button>
+                      )}
+                      <Button variant="outline" className={styles.subBtn}>EMAIL →</Button>
+                      
+                      {/* {sponsor.email && (
+                        <Button 
+                          variant="outline" 
+                          className={styles.subBtn}
+                          onClick={() => window.location.href = `mailto:${sponsor.email}`}
+                        >
+                          EMAIL →
+                        </Button>
+                      )} */}
                     </div>
                   </div>
+                  
                 </div>
 
                 {/* Right Side: Image Gallery */}
