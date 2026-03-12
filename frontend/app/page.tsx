@@ -29,14 +29,15 @@ export default function Home() {
     montreal: [
       { name: 'McGill Padel Club', logo: '/club-logos/mcgill.png' },
       { name: 'HEC Montreal Padel Club', logo: '/club-logos/HEC Montreal PAEDL CLUB.png' },
-      { name: 'Concordia Padel Club', logo: '/club-logos/Concordia.png' },
+      { name: 'Concordia Padel Club', logo: '/club-logos/Conc.jpeg' },
+      { name: 'Polysports Padel', logo: '/club-logos/polysports.png' },
     ],
     ontario: [
       { name: 'UofT Padel', logo: '/club-logos/UofT PADEL.png' },
       { name: 'UTM Padel', logo: '/club-logos/UTM PADEL.png' },
-      { name: 'TMU Padel', logo: '/club-logos/tmu.png' },
-      { name: 'McMaster Padel', logo: '/club-logos/mcmaster.png' },
-      { name: 'Polysports Padel', logo: '/club-logos/polysports.png' },
+      { name: 'TMU Padel', logo: '/club-logos/TMU Padel copy.png' },
+      { name: 'McMaster Padel', logo: '/club-logos/Mac Padel.png'},
+      ,
     ],
   };
 
@@ -63,15 +64,33 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <Navbar />
-      
       {/* Hero Section */}
-      <section className={styles.hero}>
-        <div className={styles.heroContent}>
+      <section className={styles.hero} style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* --- BLURRY BACKGROUND LAYER --- */}
+        <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundImage: "url('/images/Pic1.jpeg')", // Update this path if needed
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              filter: 'blur(1px) brightness(80%)',
+              transform: 'scale(1.1)',
+              zIndex: 1,
+            }}
+        />
+
+        {/* Content Wrapper lifted above the background */}
+        <div className={styles.heroContent} style={{ position: 'relative', zIndex: 2 }}>
           <div className={styles.logoContainer}>
-            <img 
-              src="/cupl-logo.png" 
-              alt="CUPL Logo" 
-              className={styles.cuplLogo}
+            <img
+                src="/Logo-black.png"
+                alt="CUPL Logo"
+                className={styles.cuplLogo}
             />
           </div>
           <h1>Canadian Universities Padel League</h1>
@@ -79,16 +98,41 @@ export default function Home() {
             For students, by students. Join the premier padel competition across Canadian universities.
           </p>
           {!isAuthenticated && (
-            <Button 
-              onClick={() => setIsSignInOpen(true)}
-              variant="primary" 
-              size="large"
-            >
-              Sign Up Now
-            </Button>
+              <Button
+                  onClick={() => setIsSignInOpen(true)}
+                  variant="primary"
+                  size="large"
+              >
+                Sign Up Now
+              </Button>
           )}
         </div>
       </section>
+      {/*/!* Hero Section *!/*/}
+      {/*<section className={styles.hero}>*/}
+      {/*  <div className={styles.heroContent}>*/}
+      {/*    <div className={styles.logoContainer}>*/}
+      {/*      <img */}
+      {/*        src="/cupl-logo.png" */}
+      {/*        alt="CUPL Logo" */}
+      {/*        className={styles.cuplLogo}*/}
+      {/*      />*/}
+      {/*    </div>*/}
+      {/*    <h1>Canadian Universities Padel League</h1>*/}
+      {/*    <p className={styles.tagline}>*/}
+      {/*      For students, by students. Join the premier padel competition across Canadian universities.*/}
+      {/*    </p>*/}
+      {/*    {!isAuthenticated && (*/}
+      {/*      <Button */}
+      {/*        onClick={() => setIsSignInOpen(true)}*/}
+      {/*        variant="primary" */}
+      {/*        size="large"*/}
+      {/*      >*/}
+      {/*        Sign Up Now*/}
+      {/*      </Button>*/}
+      {/*    )}*/}
+      {/*  </div>*/}
+      {/*</section>*/}
 
       {/* Participating Clubs */}
       <Section className={styles.universitiesSection}>
@@ -188,11 +232,10 @@ export default function Home() {
       <Section className={styles.sponsorsPreview}>
         <h2 className={styles.sectionTitle}>Our Sponsors</h2>
         <div className={styles.sponsorStrip}>
-          <img src="/sponsors/PadelGo.png" alt="PadelGo" className={styles.sponsorLogoPreview} />
-          <img src="/sponsors/PadelFVR.png" alt="PadelFVR" className={styles.sponsorLogoPreview} />
-          <img src="/sponsors/Padel22.png" alt="Padel22" className={styles.sponsorLogoPreview} />
-          <img src="/sponsors/SchoolYardSocial.png" alt="SchoolYardSocial" className={styles.sponsorLogoPreview} />
-          <div className={styles.sponsorPlaceholder}>Bounce</div>
+          <img src="/sponsors/Logo-one-line.png" alt="Sponsors" className={styles.sponsorLogoPreview} />
+
+
+
         </div>
         <Button href="/sponsors" variant="outline" size="medium" className={styles.viewAllButton}>
           View All Sponsors

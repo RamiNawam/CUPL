@@ -313,20 +313,48 @@ export default function EventsPage() {
     <div className={styles.page}>
       <Navbar />
       
-      <Section className={styles.heroSection}>
-        <div className={styles.heroContent}>
-          <div>
-            <h1>CUPL Events</h1>
-            <p className={styles.subtitle}>
-              Join us for exciting padel tournaments, clinics, and competitions throughout the year
-            </p>
-          </div>
-          {isAdmin && (
-            <Button href="#admin-tools" variant="primary" size="small">
-              Create Event
-            </Button>
-          )}
+      {/*<Section className={styles.heroSection}>*/}
+      {/*  <div className={styles.heroContent}>*/}
+      {/*    <div>*/}
+      {/*      <h1>CUPL Events</h1>*/}
+      {/*      <p className={styles.subtitle}>*/}
+      {/*        Join us for exciting padel tournaments, clinics, and competitions throughout the year*/}
+      {/*      </p>*/}
+      {/*    </div>*/}
+      {/*    {isAdmin && (*/}
+      {/*      <Button href="#admin-tools" variant="primary" size="small">*/}
+      {/*        Create Event*/}
+      {/*      </Button>*/}
+      {/*    )}*/}
+      {/*  </div>*/}
+      {/*</Section>*/}
+      <Section className={styles.heroSection} style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* --- BLURRY BACKGROUND LAYER --- */}
+        <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundImage: "url('/images/DSC03908 (1).jpeg')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              filter: 'blur(1px) brightness(70%)',
+              transform: 'scale(1.1)',
+              zIndex: 1,
+            }}
+        />
+
+        {/* --- FOREGROUND TEXT LAYER --- */}
+        <div style={{ position: 'relative', zIndex: 2 }}>
+          <h1>CUPL Events</h1>
+          <p className={styles.subtitle}>
+            Join us for exciting padel tournaments, clinics, and competitions throughout the year
+          </p>
         </div>
+
       </Section>
 
       {isAdmin && (

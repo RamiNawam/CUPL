@@ -15,44 +15,59 @@ interface SponsorFormData {
   message: string;
 }
 
+// interface Sponsor {
+//   name: string;
+//   logo: string | null;
+//   description: string;
+//   details: string;
+// }
+
 interface Sponsor {
   name: string;
   logo: string | null;
-  description: string;
-  details: string;
+  details: string; // This is the 'blurb' under the logo
+  images: string[];
 }
 
 const sponsors: Sponsor[] = [
+
   {
-    name: 'PadelGo',
-    logo: '/sponsors/PadelGo.png',
-    description: '', // Will be shown in modal
-    details: 'PadelGo is a leading padel facility and community hub dedicated to growing the sport across Canada. They provide world-class courts and training programs for players of all levels.',
-  },
-  {
-    name: 'PadelFVR',
-    logo: '/sponsors/PadelFVR.png',
-    description: '', // Will be shown in modal
-    details: 'PadelFVR brings the excitement of padel to communities nationwide, offering premium facilities and fostering a vibrant padel culture for enthusiasts and newcomers alike.',
-  },
-  {
-    name: 'Padel22',
-    logo: '/sponsors/Padel22.png',
-    description: '', // Will be shown in modal
-    details: 'Padel22 is committed to excellence in padel, providing top-tier facilities and supporting the development of competitive players and university teams.',
+    name: 'Ernest',
+    logo: '/sponsors/Ernest_bdremoved.png',
+    details: 'Our official cournt infrastructure partner, bringing innovative Italian-designed courts, and high-end European craftsmanship together to create a unique Padel experience. Built around patented fiberglass structures, their solutions support flexible installations and drive innovation across the padel ecosystem.',
+    images: ['/images/Ernest pic.jpeg', "/images/Ernest pic 2.png"]
   },
   {
     name: 'SchoolYardSocial',
-    logo: '/sponsors/SchoolYardSocial.png',
-    description: '', // Will be shown in modal
-    details: 'SchoolYardSocial empowers student communities through sports and social engagement, creating opportunities for students to connect, compete, and grow together.',
+    logo: '/sponsors/SYS_bdremoved.png',
+    details: 'Schoolyard Social is a Brooklyn-based startup redefining connected play with competition tech that gets you off your phone. Their all-in-one app is a live tournament marketplace that powers grassroots sports and skills-based tournaments — from beer pong leagues to neighborhood bakeoffs — connecting hosts, venues, sponsors, and participants. Schoolyard Social turns everyday players into champions through live, local, cash-prize competitions, making it easy for anyone to organize and participate in tournaments that revive community through real-life competitive play.',
+    images: ['/images/SYS1.jpeg', "/images/SYS2.jpeg"]
   },
   {
-    name: 'Bounce',
-    logo: null,
-    description: '', // Will be shown in modal
-    details: 'Bounce is dedicated to supporting the next generation of padel players, providing resources and opportunities for young athletes to excel in the sport.',
+    name: 'Padel22',
+    logo: '/sponsors/Padel22_bdremoved.png',
+    details: 'Padel22 is committed to excellence in padel, providing top-tier facilities and supporting the development of competitive players and university teams.',
+    images: ['/images/Padel22.jpeg', "/images/Padel22.2.jpg"]
   },
+  {
+    name: 'BlueZone Courts',
+    logo: '/sponsors/Bluezone_bdremoved.png',
+    details: 'Our Official Toronto hosting partner, providing the on-court home for CUPL league matches in the city - supporting a competitive and welcoming environment where university players can compete, connect, and contribute to the continued growth of the student padel community.',
+    images: ['/images/BlueZone1.jpg', "/images/BlueZone2.jpg"]
+  },
+  {
+    name: 'PadelFVR',
+    logo: '/sponsors/PadelFVR_bdremoved.png',
+    details: 'PadelFVR brings the excitement of padel to communities nationwide, offering premium facilities and fostering a vibrant padel culture for enthusiasts and newcomers alike.',
+    images: ['/images/PadelFVR.JPG', "/images/PadelFVR2.JPG"]
+  },
+  {
+    name: 'PadelGo',
+    logo: '/sponsors/Padelgo_bdremoved.png',
+    details: 'PadelGo is a leading padel facility and community hub dedicated to growing the sport across Canada. They provide world-class courts and training programs for players of all levels.',
+    images: []
+  },
+
 ];
 
 export default function SponsorsPage() {
@@ -128,7 +143,7 @@ export default function SponsorsPage() {
 
     // For now, log the data and simulate API call
     console.log('Sponsor form submitted:', formData);
-    
+
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
@@ -158,51 +173,76 @@ export default function SponsorsPage() {
   return (
     <div className={styles.page}>
       <Navbar />
-      
-      <Section className={styles.heroSection}>
-        <h1>Our Sponsors</h1>
-        <p className={styles.subtitle}>
-          Thank you to our partners who make CUPL possible
-        </p>
-      </Section>
+      <Section className={styles.heroSection} style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* --- BLURRY BACKGROUND LAYER --- */}
+        <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundImage: "url('/images/sponsortitlebackground.JPG')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              filter: 'blur(1px) brightness(70%)',
+              transform: 'scale(1.1)',
+              zIndex: 1,
+            }}
+        />
 
-      <Section className={styles.sponsorsSection}>
-        <div className={styles.sponsorsGrid}>
-          {sponsors.map((sponsor, index) => (
-            <div key={index} className={styles.sponsorCard}>
-              <div className={styles.sponsorLogo}>
-                {sponsor.logo ? (
-                  <img 
-                    src={sponsor.logo} 
-                    alt={sponsor.name} 
-                    className={styles.sponsorLogoImage}
-                  />
-                ) : (
-                  <div className={styles.sponsorLogoPlaceholder}>
-                    {sponsor.name}
-                  </div>
-                )}
-              </div>
-              <Button
-                onClick={() => {
-                  setSelectedSponsor(sponsor);
-                  setIsSponsorModalOpen(true);
-                }}
-                variant="outline"
-                size="small"
-                className={styles.seeMoreButton}
-              >
-                See More
-              </Button>
-            </div>
-          ))}
+        {/* --- FOREGROUND TEXT LAYER --- */}
+        <div style={{ position: 'relative', zIndex: 2 }}>
+          <h1>Our Sponsors</h1>
+          <p className={styles.subtitle}>
+            Thank you to our partners who make CUPL possible
+          </p>
         </div>
       </Section>
+
+      <section className={styles.fullWidthSponsors}>
+        <div className={styles.sponsorsContainer}>
+          {sponsors.map((sponsor, index) => (
+              <div key={index} className={styles.sponsorFeature}>
+                {/* Left Side: Info */}
+                <div className={styles.sponsorInfo}>
+                  <div className={styles.brandHeader}>
+                    {sponsor.logo ? (
+                        <img src={sponsor.logo} alt={sponsor.name} className={styles.mainLogo} />
+                    ) : (
+                        <h2 className={styles.placeholderName}>{sponsor.name}</h2>
+                    )}
+                  </div>
+
+                  <div className={styles.textContent}>
+                    <p className={styles.descriptionText}>{sponsor.details}</p>
+                    <div className={styles.actionButtons}>
+                      <Button variant="primary" className={styles.visitBtn}>VISIT →</Button>
+                      <div className={styles.socialRow}>
+                        <Button variant="outline" className={styles.subBtn}>INSTAGRAM →</Button>
+                        <Button variant="outline" className={styles.subBtn}>EMAIL →</Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Side: Image Gallery */}
+                <div className={styles.imageGrid}>
+                  <div className={styles.smallImages}>
+                    <img src={sponsor.images[0]} alt="Action" />
+                    <img src={sponsor.images[1]} alt="Action" />
+                  </div>
+                </div>
+              </div>
+          ))}
+        </div>
+      </section>
 
       <Section className={styles.ctaSection}>
         <h2>Become a Sponsor</h2>
         <p>
-          Interested in supporting CUPL and reaching university students across Canada? 
+          Interested in supporting CUPL and reaching university students across Canada?
           Get in touch with us to learn about sponsorship opportunities.
         </p>
         <Button
@@ -229,9 +269,9 @@ export default function SponsorsPage() {
             <div className={styles.sponsorModalContent}>
               <div className={styles.sponsorModalLogo}>
                 {selectedSponsor.logo ? (
-                  <img 
-                    src={selectedSponsor.logo} 
-                    alt={selectedSponsor.name} 
+                  <img
+                    src={selectedSponsor.logo}
+                    alt={selectedSponsor.name}
                     className={styles.sponsorModalLogoImage}
                   />
                 ) : (

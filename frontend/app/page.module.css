@@ -4,6 +4,15 @@
   flex-direction: column;
 }
 
+/*.hero {*/
+/*  min-height: 80vh;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  text-align: center;*/
+/*  padding: var(--spacing-xl) var(--spacing-md);*/
+/*  background: linear-gradient(135deg, rgba(209, 22, 42, 0.1) 0%, rgba(0, 0, 0, 1) 100%);*/
+/*}*/
 .hero {
   min-height: 80vh;
   display: flex;
@@ -11,7 +20,7 @@
   justify-content: center;
   text-align: center;
   padding: var(--spacing-xl) var(--spacing-md);
-  background: linear-gradient(135deg, rgba(209, 22, 42, 0.1) 0%, rgba(0, 0, 0, 1) 100%);
+  /* Removed the linear-gradient background from here */
 }
 
 .heroContent {
@@ -30,10 +39,8 @@
 }
 
 .cuplLogo {
-  max-width: 200px;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 25vh;
+  object-fit: cover ;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
@@ -262,25 +269,16 @@
 }
 
 .sponsorsPreview {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--color-red);
   text-align: center;
 }
-
-.sponsorStrip {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--spacing-lg);
-  flex-wrap: wrap;
-  margin-bottom: var(--spacing-md);
-  padding: var(--spacing-md) 0;
+/* Targets only the section title inside the sponsors preview to reduce the gap */
+.sponsorsPreview .sectionTitle {
+  margin-bottom: 0; /* You can change this to var(--spacing-sm) or '16px' if you want it even smaller */
 }
 
 .sponsorLogoPreview {
-  max-height: 80px;
-  max-width: 150px;
-  width: auto;
-  height: auto;
+  margin: 0;
   object-fit: contain;
   filter: brightness(0.9);
   transition: all 0.3s ease;
@@ -289,21 +287,6 @@
 .sponsorLogoPreview:hover {
   filter: brightness(1);
   transform: scale(1.05);
-}
-
-.sponsorPlaceholder {
-  padding: var(--spacing-md) var(--spacing-lg);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.9rem;
-  min-width: 150px;
-  text-align: center;
-}
-
-.viewAllButton {
-  margin-top: var(--spacing-md);
 }
 
 .disclaimer {
@@ -334,11 +317,6 @@
   .universitiesGrid {
     grid-template-columns: 1fr;
     gap: var(--spacing-sm);
-  }
-
-  .sponsorStrip {
-    flex-direction: column;
-    gap: var(--spacing-md);
   }
 
   .eventsGrid {
