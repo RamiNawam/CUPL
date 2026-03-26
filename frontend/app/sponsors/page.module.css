@@ -37,7 +37,7 @@
 .sponsorFeature {
   display: flex;
   gap: 60px;
-  align-items: center;
+  align-items: flex-start;
   padding: 100px 10%; /* Wide padding for a premium feel */
   width: 100%;
 }
@@ -152,9 +152,25 @@
 .imageGrid img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  border-radius: 20px;
+  object-fit: cover;
+  display: block;
   /*box-shadow: 0 10px 30px rgba(0,0,0,0.3);*/
+}
+
+.sponsorImageTile {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.schoolyardImages .sponsorImageTile {
+  aspect-ratio: 16 / 10;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.schoolyardImages .sponsorImageTile img {
+  object-fit: cover;
 }
 
 .largeImage {
@@ -166,6 +182,30 @@
   grid-template-columns: 1fr 1fr;
   gap: 20px;
   height: 80vh;
+}
+
+.padelGoFeature {
+  align-items: stretch;
+}
+
+.padelGoFeature .imageGrid {
+  align-self: stretch;
+}
+
+.padelGoFeature .smallImages {
+  height: 100%;
+}
+
+.schoolyardFeature {
+  align-items: stretch;
+}
+
+.schoolyardFeature .imageGrid {
+  align-self: stretch;
+}
+
+.schoolyardFeature .smallImages {
+  height: 100%;
 }
 
 .stackedImages {

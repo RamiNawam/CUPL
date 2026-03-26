@@ -337,12 +337,12 @@ export default function EventsPage() {
               left: 0,
               width: '100%',
               height: '100%',
-              backgroundImage: "url('/images/DSC03908 (1).jpeg')",
+              backgroundImage: "url('/images/event.backround.jpeg')",
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
-              filter: 'blur(1px) brightness(70%)',
-              transform: 'scale(1.1)',
+              filter: 'brightness(75%)',
+              transform: 'scale(1.02)',
               zIndex: 1,
             }}
         />

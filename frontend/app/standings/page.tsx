@@ -6,24 +6,33 @@ import Footer from '@/components/Footer';
 import Section from '@/components/Section';
 import styles from './page.module.css';
 
-// Added 'logo' field to each team
-const quebecStandings = [
-  { position: 1, team: 'McGill Padel Club', logo: '/club-logos/mcgill.png', wins: 5, losses: 0, points: 15 },
-  { position: 2, team: 'HEC Montreal Padel Club', logo: '/club-logos/HEC Montreal PAEDL CLUB.png', wins: 3, losses: 2, points: 9 },
-  { position: 3, team: 'Concordia Padel Club', logo: '/club-logos/Concordia Logo.png', wins: 1, losses: 4, points: 3 },
-    { position: 4, team: 'Polysports Padel', logo: '/club-logos/polysports.png', wins: 2, losses: 3, points: 6 },
+interface StandingTeam {
+  position: number;
+  team: string;
+  logo: string;
+  whiteLogoBackground?: boolean;
+  wins: number;
+  losses: number;
+  points: number;
+}
+
+const quebecStandings: StandingTeam[] = [
+  { position: 1, team: 'McGill', logo: '/club-logos/mcgill.png', whiteLogoBackground: true, wins: 5, losses: 0, points: 15 },
+  { position: 2, team: 'HEC Montreal', logo: '/club-logos/HEC Montreal PAEDL CLUB.png', wins: 3, losses: 2, points: 9 },
+  { position: 3, team: 'Concordia', logo: '/club-logos/Conc.jpeg', wins: 1, losses: 4, points: 3 },
+  { position: 4, team: 'Polysports', logo: '/club-logos/polysports.png', wins: 2, losses: 3, points: 6 },
 ];
 
-const ontarioStandings = [
-  { position: 1, team: 'UofT Padel', logo: '/club-logos/UofT PADEL.png', wins: 4, losses: 1, points: 12 },
-  { position: 2, team: 'UTM Padel', logo: '/club-logos/UTM PADEL.png', wins: 3, losses: 2, points: 9 },
-  { position: 3, team: 'TMU Padel', logo: '/club-logos/TMU Padel copy.png', wins: 3, losses: 2, points: 9 },
-  { position: 4, team: 'McMaster Padel', logo: '/club-logos/Mac Padel.png', wins: 2, losses: 3, points: 6 },
+const ontarioStandings: StandingTeam[] = [
+  { position: 1, team: 'UofT', logo: '/club-logos/UofT PADEL.png', whiteLogoBackground: true, wins: 4, losses: 1, points: 12 },
+  { position: 2, team: 'UTM', logo: '/club-logos/UTM PADEL.png', wins: 3, losses: 2, points: 9 },
+  { position: 3, team: 'TMU', logo: '/club-logos/TMU Padel copy.png', wins: 3, losses: 2, points: 9 },
+  { position: 4, team: 'McMaster', logo: '/club-logos/Mac Padel.png', wins: 2, losses: 3, points: 6 },
 
 ];
 
 export default function StandingsPage() {
-  const renderTable = (title: string, data: typeof quebecStandings) => (
+  const renderTable = (title: string, data: StandingTeam[]) => (
       <div className={styles.tableSection}>
         <h2 className={styles.regionTitle}>{title}</h2>
         <div className={styles.tableWrapper}>
@@ -43,13 +52,15 @@ export default function StandingsPage() {
                   <td className={styles.position}>{team.position}</td>
                   <td className={styles.teamCell}>
                     <div className={styles.teamInfo}>
-                      <div className={styles.logoWrapper}>
+                      <div
+                        className={`${styles.logoWrapper} ${team.whiteLogoBackground ? styles.logoWrapperLight : ''}`}
+                      >
                         <Image
                             src={team.logo}
                             alt={`${team.team} logo`}
                             width={30}
                             height={30}
-                            className={styles.teamLogo}
+                            className={`${styles.teamLogo} ${team.whiteLogoBackground ? styles.teamLogoFramed : ''}`}
                         />
                       </div>
                       <span className={styles.teamName}>{team.team}</span>

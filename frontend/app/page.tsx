@@ -27,17 +27,16 @@ export default function Home() {
 
   const clubsByRegion = {
     montreal: [
-      { name: 'McGill Padel Club', logo: '/club-logos/mcgill.png' },
+      { name: 'McGill Padel Club', logo: '/club-logos/mcgill.png',logoZoom: 1.5 },
       { name: 'HEC Montreal Padel Club', logo: '/club-logos/HEC Montreal PAEDL CLUB.png' },
-      { name: 'Concordia Padel Club', logo: '/club-logos/Conc.jpeg' },
+      { name: 'Concordia Padel Club', logo: '/club-logos/Conc.jpeg', logoZoom: 1.3 },
       { name: 'Polysports Padel', logo: '/club-logos/polysports.png' },
     ],
     ontario: [
-      { name: 'UofT Padel', logo: '/club-logos/UofT PADEL.png' },
+      { name: 'UofT Padel', logo: '/club-logos/UofT PADEL.png', logoZoom: 1.5 },
       { name: 'UTM Padel', logo: '/club-logos/UTM PADEL.png' },
-      { name: 'TMU Padel', logo: '/club-logos/TMU Padel copy.png' },
-      { name: 'McMaster Padel', logo: '/club-logos/Mac Padel.png'},
-      ,
+      { name: 'TMU Padel', logo: '/club-logos/TMU Padel copy.png', logoZoom: 1.25 },
+      { name: 'McMaster Padel', logo: '/club-logos/Mac Padel.png', logoZoom: 1.1 },
     ],
   };
 
@@ -86,13 +85,6 @@ export default function Home() {
 
         {/* Content Wrapper lifted above the background */}
         <div className={styles.heroContent} style={{ position: 'relative', zIndex: 2 }}>
-          <div className={styles.logoContainer}>
-            <img
-                src="/Logo-black.png"
-                alt="CUPL Logo"
-                className={styles.cuplLogo}
-            />
-          </div>
           <h1>Canadian Universities Padel League</h1>
           <p className={styles.tagline}>
             For students, by students. Join the premier padel competition across Canadian universities.
@@ -145,12 +137,13 @@ export default function Home() {
             <div className={styles.universitiesGrid}>
               {clubsByRegion.montreal.map((club) => (
                 <div key={club.name} className={styles.universityCard}>
-                  <div className={styles.logoContainer}>
+                  <div className={styles.clubLogoContainer}>
                     {club.logo ? (
                       <img 
                         src={club.logo} 
                         alt={club.name} 
                         className={styles.clubLogo}
+                        style={{ transform: `scale(${club.logoZoom ?? 1})` }}
                       />
                     ) : (
                       <div className={styles.logoPlaceholder}>
@@ -170,12 +163,13 @@ export default function Home() {
             <div className={styles.universitiesGrid}>
               {clubsByRegion.ontario.map((club) => (
                 <div key={club.name} className={styles.universityCard}>
-                  <div className={styles.logoContainer}>
+                  <div className={styles.clubLogoContainer}>
                     {club.logo ? (
                       <img 
                         src={club.logo} 
                         alt={club.name} 
                         className={styles.clubLogo}
+                        style={{ transform: `scale(${club.logoZoom ?? 1})` }}
                       />
                     ) : (
                       <div className={styles.logoPlaceholder}>

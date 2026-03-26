@@ -71,7 +71,7 @@ const sponsors: Sponsor[] = [
     details: 'PadelFVR brings the excitement of padel to communities nationwide, offering premium facilities and fostering a vibrant padel culture for enthusiasts and newcomers alike.',
     website: 'https://www.padelfvr.ca/',
     instagram: 'https://www.instagram.com/padelfvr/', 
-    images: ['/images/PadelFVR.JPG', "/images/PadelFVR2.JPG"]
+    images: ['/images/padelfvr1.jpeg', '/images/padelfvr4.jpeg', '/images/padelfvr2.jpeg', '/images/padelfvr3.jpeg']
   },
     {
     name: 'BlueZone Courts',
@@ -79,7 +79,7 @@ const sponsors: Sponsor[] = [
     details: 'Our Official Toronto hosting partner, providing the on-court home for CUPL league matches in the city - supporting a competitive and welcoming environment where university players can compete, connect, and contribute to the continued growth of the student padel community.',
     website: 'https://bluezonecourts.com/',
     instagram: 'https://www.instagram.com/bluezonecourts/', 
-    images: ['/images/BlueZone1.jpg', "/images/BlueZone2.jpg"]
+    images: ['/sponsors/bluezone1.jpg', '/sponsors/bluezone2.jpg', '/sponsors/bluezone3.jpg']
   },
 
 ];
@@ -187,7 +187,7 @@ export default function SponsorsPage() {
   return (
     <div className={styles.page}>
       <Navbar />
-      <Section className={styles.heroSection} style={{ position: 'relative', overflow: 'hidden' }}>
+      <Section className={styles.heroSection}>
         {/* --- BLURRY BACKGROUND LAYER --- */}
         
 
@@ -203,7 +203,10 @@ export default function SponsorsPage() {
       <section className={styles.fullWidthSponsors}>
         <div className={styles.sponsorsContainer}>
           {sponsors.map((sponsor, index) => (
-              <div key={index} className={styles.sponsorFeature}>
+              <div
+                key={index}
+                className={`${styles.sponsorFeature} ${sponsor.name === 'PadelGo' ? styles.padelGoFeature : ''} ${sponsor.name === 'SchoolYardSocial' ? styles.schoolyardFeature : ''}`}
+              >
                 {/* Left Side: Info */}
                 <div className={styles.sponsorInfo}>
   
@@ -258,9 +261,19 @@ export default function SponsorsPage() {
 
                 {/* Right Side: Image Gallery */}
                 <div className={styles.imageGrid}>
-                  <div className={styles.smallImages}>
-                    <img src={sponsor.images[0]} alt="Action" />
-                    <img src={sponsor.images[1]} alt="Action" />
+                  <div
+                    className={`${styles.smallImages} ${
+                      sponsor.name === 'SchoolYardSocial' ? styles.schoolyardImages : ''
+                    }`}
+                  >
+                    {sponsor.images.map((image, imageIndex) => (
+                      <div key={`${sponsor.name}-${imageIndex}`} className={styles.sponsorImageTile}>
+                        <img
+                          src={image}
+                          alt={`${sponsor.name} image ${imageIndex + 1}`}
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>

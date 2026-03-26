@@ -56,10 +56,10 @@
 
 .standingsContainer {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--spacing-xl);
   margin-top: var(--spacing-lg);
-  align-items: start;
+  align-items: stretch;
 }
 
 .tableSection {
@@ -98,7 +98,7 @@
 }
 
 .standingsTable thead {
-  background: rgba(209, 22, 42, 0.2);
+  background: transparent;
 }
 
 .standingsTable th {
@@ -106,7 +106,7 @@
   text-align: left;
   font-weight: 700;
   color: var(--color-white);
-  border-bottom: 2px solid var(--color-red);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -119,6 +119,7 @@
 
 .standingsTable th:nth-child(2) {
   text-align: left;
+  width: auto;
 }
 
 .standingsTable th:nth-child(n+3) {
@@ -136,12 +137,12 @@
 }
 
 .standingsTable tbody tr.firstPlace {
-  background: rgba(209, 22, 42, 0.15);
-  border-left: 3px solid var(--color-red);
+  background: transparent;
+  border-left: none;
 }
 
 .standingsTable tbody tr.firstPlace:hover {
-  background: rgba(209, 22, 42, 0.25);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .standingsTable td {
@@ -152,7 +153,7 @@
 .position {
   text-align: center;
   font-weight: 700;
-  color: var(--color-red);
+  color: var(--color-white);
   font-size: 1.1rem;
 }
 
@@ -161,6 +162,7 @@
   display: flex;
   align-items: center; /* This centers them vertically relative to each other */
   gap: 12px;
+  min-width: 0;
 }
 
 /* 2. Creates the circular mask */
@@ -177,6 +179,11 @@
   border: 1px solid rgba(255, 255, 255, 0.2); /* Optional: Adds a thin ring around the logo */
 }
 
+.logoWrapperLight {
+  background-color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
 /* 3. Ensures the image fills the circle */
 .teamLogo {
   width: 100%;
@@ -184,15 +191,24 @@
   object-fit: cover; /* 'cover' is better than 'contain' for circles so it fills the whole space */
 }
 
+.teamLogoFramed {
+  object-fit: contain;
+  padding: 3px;
+}
+
 .teamName {
   font-weight: 600;
   color: var(--color-white);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
 }
 
 .points {
   text-align: center;
   font-weight: 700;
-  color: var(--color-red);
+  color: var(--color-white);
   font-size: 1.1rem;
 }
 
