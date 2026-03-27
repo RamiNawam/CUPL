@@ -222,19 +222,36 @@ export default function Home() {
         )}
       </Section>
 
-      {/* Sponsors Preview */}
-      <Section className={styles.sponsorsPreview}>
-        <h2 className={styles.sectionTitle}>Our Sponsors</h2>
-        <div className={styles.sponsorStrip}>
-          <img src="/sponsors/Logo-one-line.png" alt="Sponsors" className={styles.sponsorLogoPreview} />
 
+      {/* Sponsors Section */}
+      <section className={styles.sponsorsSection}>
+        <div className={styles.sponsorsInner}>
+          <h2 className={styles.sponsorsTitle}>Sponsors</h2>
 
+          <div className={styles.marqueeWrapper}>
+            <div className={styles.marqueeTrack}>
+              {[
+                { src: '/sponsors/ErnestLogoBR.png', alt: 'Ernest' },
+                { src: '/sponsors/SYS_bdremoved.png', alt: 'SYS' },
+                { src: '/sponsors/Padel22LogoBR.png', alt: 'Padel 22' },
+                { src: '/sponsors/PadelGoLogoBR.png', alt: 'PadelGo' },
+                { src: '/sponsors/PadelFVRLogoBR.png', alt: 'Padel FVR' },
+                { src: '/sponsors/BlueZoneLogoBR.png', alt: 'BlueZone' },
+                { src: '/sponsors/ErnestLogoBR.png', alt: 'Ernest' },
+                { src: '/sponsors/SYS_bdremoved.png', alt: 'SYS' },
+                { src: '/sponsors/Padel22LogoBR.png', alt: 'Padel 22' },
+                { src: '/sponsors/PadelGoLogoBR.png', alt: 'PadelGo' },
+                { src: '/sponsors/PadelFVRLogoBR.png', alt: 'Padel FVR' },
+                { src: '/sponsors/BlueZoneLogoBR.png', alt: 'BlueZone' },
+              ].map((logo, i) => (
+                <img key={i} src={logo.src} alt={logo.alt} className={styles.marqueeLogo} />
+              ))}
+            </div>
+          </div>
 
+          <Button href="/sponsors" variant="outline" size="large">View Sponsors</Button>
         </div>
-        <Button href="/sponsors" variant="outline" size="medium" className={styles.viewAllButton}>
-          View All Sponsors
-        </Button>
-      </Section>
+      </section>
 
       <div className={styles.disclaimer}>
         <p className={styles.disclaimerText}>
