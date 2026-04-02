@@ -1,11 +1,9 @@
 package com.cupl.backend.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public class LoginRequest {
     @NotBlank
-    @Email
     private String email;
 
     @NotBlank
@@ -16,7 +14,7 @@ public class LoginRequest {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email == null ? null : email.trim();
     }
 
     public String getPassword() {
