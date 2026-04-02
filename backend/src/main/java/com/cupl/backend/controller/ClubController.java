@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -51,7 +52,12 @@ public class ClubController {
             @PathVariable UUID clubId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        org.springframework.data.domain.Page<Player> playerPage = clubService.getClubPlayers(clubId, page, size);
+        if (page < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page index must not be less than zero");
+        }
+
+        int safeSize = size < 1 ? 10 : size;
+        org.springframework.data.domain.Page<Player> playerPage = clubService.getClubPlayers(clubId, page, safeSize);
         List<PlayerResponse> content = playerPage.getContent().stream()
                 .map(PlayerResponse::from)
                 .toList();

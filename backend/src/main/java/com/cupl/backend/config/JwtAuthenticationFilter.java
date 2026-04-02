@@ -36,8 +36,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 email = jwtUtil.getEmailFromToken(jwt);
                 role = jwtUtil.getRoleFromToken(jwt);
             } catch (Exception e) {
-                // Token is invalid, continue without authentication
                 logger.debug("Invalid JWT token: " + e.getMessage());
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
+                return;
             }
         }
 
