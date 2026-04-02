@@ -169,8 +169,23 @@
   background: rgba(0, 0, 0, 0.35);
 }
 
-.schoolyardImages .sponsorImageTile img {
-  object-fit: cover;
+.containedImageWrapper {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.containedImageWrapper img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  display: block;
+  border-radius: 20px;
 }
 
 .largeImage {

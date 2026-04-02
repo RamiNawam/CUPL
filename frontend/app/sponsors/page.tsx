@@ -268,10 +268,19 @@ export default function SponsorsPage() {
                   >
                     {sponsor.images.map((image, imageIndex) => (
                       <div key={`${sponsor.name}-${imageIndex}`} className={styles.sponsorImageTile}>
-                        <img
-                          src={image}
-                          alt={`${sponsor.name} image ${imageIndex + 1}`}
-                        />
+                        {sponsor.name === 'SchoolYardSocial' ? (
+                          <div className={styles.containedImageWrapper}>
+                            <img
+                              src={image}
+                              alt={`${sponsor.name} image ${imageIndex + 1}`}
+                            />
+                          </div>
+                        ) : (
+                          <img
+                            src={image}
+                            alt={`${sponsor.name} image ${imageIndex + 1}`}
+                          />
+                        )}
                       </div>
                     ))}
                   </div>
