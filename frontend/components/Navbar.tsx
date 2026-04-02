@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image'; // <-- Added import
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import SignInModal from './SignInModal';
@@ -17,6 +18,7 @@ export default function Navbar() {
   const baseNavLinks = [
     { href: '/', label: 'Home' },
     { href: '/events', label: 'Events' },
+    { href: '/standings', label: 'Standings' },
     { href: '/sponsors', label: 'Sponsors' },
     { href: '/about', label: 'About' },
   ];
@@ -38,8 +40,18 @@ export default function Navbar() {
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
-        <Link href="/" className={styles.logo}>
-          CUPL
+        {/* Updated Logo Link */}
+        {/* Updated Circular Logo Link */}
+        <Link href="/" className={styles.logoContainer}>
+          <Image 
+            src="/Logo-black.png" 
+            alt="CUPL Logo" 
+            width={150}     /* Keep width and height equal */
+            height={150}    
+            quality={100}
+            priority        
+            className={styles.logoImage} /* Added this new class */
+          />
         </Link>
         
         <button

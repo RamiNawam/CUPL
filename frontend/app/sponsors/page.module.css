@@ -4,87 +4,326 @@
   flex-direction: column;
 }
 
+/* Hero Section */
 .heroSection {
   text-align: center;
-  padding: var(--spacing-xl) 0;
-  background: linear-gradient(135deg, rgba(209, 22, 42, 0.1) 0%, rgba(0, 0, 0, 1) 100%);
+  background-color: #000;
+  /* CRITICAL: These two lines keep the background image contained! */
+  position: relative;
+  overflow: hidden;
 }
 
 .heroSection h1 {
   margin-bottom: var(--spacing-sm);
   color: var(--color-white);
+  font-size: 3.5rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
 .subtitle {
   font-size: 1.25rem;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Main Container */
+.sponsorsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Individual Sponsor Segment */
+.sponsorFeature {
+  display: flex;
+  gap: 60px;
+  align-items: flex-start;
+  padding: 100px 10%; /* Wide padding for a premium feel */
+  width: 100%;
+}
+
+/* 1st, 3rd, 5th... - RED BACKGROUND & FLIPPED */
+.sponsorFeature:nth-child(even) {
+  background-color: #000000; /* #D1162A */
+  flex-direction: row-reverse;
+}
+
+/* 2nd, 4th, 6th... - BLACK BACKGROUND & NORMAL */
+.sponsorFeature:nth-child(odd) {
+  background-color: var(--color-red);
+  flex-direction: row;
+}
+
+/* Left/Right Text Column */
+.sponsorInfo {
+  flex: 1;
+  max-width: 450px;
+}
+
+.brandHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 25px; /* Slightly tighter to connect with the text */
+  min-height: 80px;
+}
+
+.mainLogo {
+  width: auto;
+  height: auto;
+  max-width: 280px; /* Prevents wide logos from taking over the column */
+  max-height: 90px;  /* Keeps tall/square logos in check */
+  object-fit: contain;
+  transition: transform 0.3s ease; /* Smooth animation for hover */
+  transform-origin: center center; /* Scales from the left so it doesn't shift */
+}
+
+/* Adds a slight zoom effect when users hover over the logo */
+.mainLogo:hover {
+  transform: scale(1.05);
+}
+
+.placeholderName {
+  color: #ffffff;
+  font-size: 2.5rem; /* Made slightly larger to match the visual weight of an image */
+  font-weight: 800;
+  letter-spacing: -0.02em; /* Tighter letter spacing for a modern look */
+  margin: 0;
+}
+
+/* .descriptionText {
+  line-height: 1.8;
   color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  margin-bottom: 35px;
+} */
+ .descriptionText {
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  margin-bottom: 0; /* Changed from 35px so the bottom padding of the grey box handles the spacing */
 }
 
-.sponsorsSection {
-  padding: var(--spacing-xl) 0;
+/* Action Buttons */
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.sponsorsGrid {
+.visitBtn {
+  width: 100%;
+  font-weight: 700 !important;
+}
+
+/* Contrast adjustment for buttons on RED backgrounds */
+.sponsorFeature:nth-child(odd) .visitBtn {
+  background-color: #ffffff !important;
+  color: var(--color-red) !important;
+}
+
+.socialRow {
+  display: flex;
+  gap: 15px;
+}
+
+.subBtn {
+  flex: 1;
+}
+
+.greyBox {
+  /* Using a translucent white creates a nice glassy dark grey that 
+     looks great on both your black and red backgrounds! */
+  background-color: rgba(134, 123, 123); 
+  border-radius: 20px;
+  padding: 40px 30px;
+  margin-bottom: 25px; /* Pushes the action buttons down */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Optional: adds a crisp edge */
+}
+
+/* Right/Left Image Gallery Grid */
+.imageGrid {
+  flex: 1.3;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.imageGrid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /*box-shadow: 0 10px 30px rgba(0,0,0,0.3);*/
+}
+
+.sponsorImageTile {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.schoolyardImages .sponsorImageTile {
+  aspect-ratio: 16 / 10;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.containedImageWrapper {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.containedImageWrapper img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  display: block;
+  border-radius: 20px;
+}
+
+.largeImage {
+  height: 350px;
+}
+
+.smallImages {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--spacing-lg);
-  margin-top: var(--spacing-lg);
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  height: 80vh;
 }
 
-.sponsorCard {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: var(--spacing-lg);
+.padelGoFeature {
+  align-items: stretch;
+}
+
+.padelGoFeature .imageGrid {
+  align-self: stretch;
+}
+
+.padelGoFeature .smallImages {
+  height: 100%;
+}
+
+.schoolyardFeature {
+  align-items: stretch;
+}
+
+.schoolyardFeature .imageGrid {
+  align-self: stretch;
+}
+
+.schoolyardFeature .smallImages {
+  height: 100%;
+}
+
+.stackedImages {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Become a Sponsor Section */
+.ctaSection {
   text-align: center;
-  transition: all 0.3s ease;
+  padding: 120px 0;
+  background: #000;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.sponsorCard:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--color-red);
-  transform: translateY(-4px);
+/* Mobile Responsiveness */
+@media (max-width: 1100px) {
+  .sponsorFeature,
+  .sponsorFeature:nth-child(odd) {
+    flex-direction: column;
+    padding: 80px 5%;
+    gap: 40px;
+  }
+
+  .sponsorInfo {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  /*.brandHeader {
+    margin: 0 auto 30px;
+    justify-content: center;
+  }*/
+  .brandHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px; /* Reduced slightly since the box adds padding */
+  min-height: 80px;
 }
 
-.sponsorLogo {
-  height: 120px;
+  /* .mainLogo {
+    transform-origin: center center;
+  } */
+
+  .smallImages {
+    height: auto;
+    grid-template-columns: 1fr;
+  }
+
+}
+
+.seeMoreButton {
+  margin-top: var(--spacing-md);
+  width: 100%;
+}
+
+.sponsorModalContent {
+  text-align: center;
+  padding: var(--spacing-md) 0;
+}
+
+.sponsorModalLogo {
+  height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  overflow: hidden;
+}
+
+.sponsorModalLogoImage {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.sponsorModalLogoPlaceholder {
   font-weight: 700;
-  font-size: 1.25rem;
+  font-size: 2rem;
   color: rgba(255, 255, 255, 0.7);
 }
 
-.sponsorDescription {
-  color: rgba(255, 255, 255, 0.8);
-  line-height: 1.6;
-}
-
-.ctaSection {
-  text-align: center;
-  padding: var(--spacing-xl) 0;
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.ctaSection h2 {
+.sponsorModalTitle {
   color: var(--color-white);
+  font-size: 2rem;
   margin-bottom: var(--spacing-md);
+  font-weight: 700;
 }
 
-.ctaSection p {
-  max-width: 600px;
-  margin: 0 auto var(--spacing-lg);
+.sponsorModalDetails {
   color: rgba(255, 255, 255, 0.9);
+  line-height: 1.8;
   font-size: 1.125rem;
-  line-height: 1.6;
-}
-
-.ctaButton {
-  margin-top: var(--spacing-md);
+  text-align: left;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 /* Modal Styles */

@@ -4,6 +4,15 @@
   flex-direction: column;
 }
 
+/*.hero {*/
+/*  min-height: 80vh;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  text-align: center;*/
+/*  padding: var(--spacing-xl) var(--spacing-md);*/
+/*  background: linear-gradient(135deg, rgba(209, 22, 42, 0.1) 0%, rgba(0, 0, 0, 1) 100%);*/
+/*}*/
 .hero {
   min-height: 80vh;
   display: flex;
@@ -11,7 +20,7 @@
   justify-content: center;
   text-align: center;
   padding: var(--spacing-xl) var(--spacing-md);
-  background: linear-gradient(135deg, rgba(209, 22, 42, 0.1) 0%, rgba(0, 0, 0, 1) 100%);
+  /* Removed the linear-gradient background from here */
 }
 
 .heroContent {
@@ -30,10 +39,8 @@
 }
 
 .cuplLogo {
-  max-width: 200px;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 25vh;
+  object-fit: cover ;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
@@ -65,15 +72,39 @@
 
 .sectionTitle {
   text-align: center;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
   color: var(--color-white);
+}
+
+.regionsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-lg);
+}
+
+.regionSection {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.regionTitle {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-red);
+  margin-bottom: var(--spacing-lg);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .universitiesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--spacing-md);
   margin-top: var(--spacing-lg);
+  align-content: start;
 }
 
 .universityCard {
@@ -86,7 +117,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   gap: var(--spacing-sm);
+  min-height: 250px;
 }
 
 .universityCard:hover {
@@ -96,7 +129,7 @@
   box-shadow: 0 8px 24px rgba(209, 22, 42, 0.2);
 }
 
-.logoContainer {
+.clubLogoContainer {
   width: 120px;
   height: 120px;
   border-radius: 50%;
@@ -109,7 +142,7 @@
   transition: all 0.3s ease;
 }
 
-.universityCard:hover .logoContainer {
+.universityCard:hover .clubLogoContainer {
   border-color: var(--color-red);
   transform: scale(1.05);
 }
@@ -142,6 +175,11 @@
   color: var(--color-white);
   margin: 0;
   line-height: 1.4;
+  min-height: 2.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .eventsSection {
@@ -239,34 +277,78 @@
   margin-top: auto;
 }
 
-.sponsorsPreview {
-  background: rgba(255, 255, 255, 0.02);
-  text-align: center;
+
+/* ── Sponsors Section ── */
+.sponsorsSection {
+  background: var(--color-red);
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.sponsorStrip {
+.sponsorsInner {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 var(--spacing-md);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   gap: var(--spacing-lg);
-  flex-wrap: wrap;
-  margin-bottom: var(--spacing-md);
-  padding: var(--spacing-md) 0;
 }
 
-.sponsorPlaceholder {
-  padding: var(--spacing-md) var(--spacing-lg);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.9rem;
-  min-width: 150px;
+.sponsorsTitle {
+  color: var(--color-white);
   text-align: center;
+  margin: 0;
 }
 
-.viewAllButton {
-  margin-top: var(--spacing-md);
+/* Marquee */
+.marqueeWrapper {
+  width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+.marqueeTrack {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+  width: max-content;
+  animation: marquee 20s linear infinite;
+}
+
+.marqueeLogo {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.9;
+  flex-shrink: 0;
+  transition: opacity 0.3s ease;
+}
+
+.marqueeLogo:hover {
+  opacity: 1;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.disclaimer {
+  background: rgba(255, 255, 255, 0.02);
+  padding: var(--spacing-md) var(--spacing-lg);
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.disclaimerText {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+  margin: 0;
+  font-style: italic;
 }
 
 @media (max-width: 768px) {
@@ -275,14 +357,14 @@
     padding: var(--spacing-lg) var(--spacing-sm);
   }
 
-  .universitiesGrid {
+  .regionsContainer {
     grid-template-columns: 1fr;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-lg);
   }
 
-  .sponsorStrip {
-    flex-direction: column;
-    gap: var(--spacing-md);
+  .universitiesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-sm);
   }
 
   .eventsGrid {

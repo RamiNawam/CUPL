@@ -2,8 +2,10 @@
 
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { getApiUrl } from '@/lib/api';
+import { parseErrorResponse, isErrorCode, ErrorCode } from '@/lib/errors';
 import Button from './Button';
 import styles from './SignInModal.module.css';
 
@@ -23,6 +25,10 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+  const [forgotPasswordSuccess, setForgotPasswordSuccess] = useState(false);
+  const [forgotPasswordError, setForgotPasswordError] = useState('');
 
   // Sign Up state
   const [signUpData, setSignUpData] = useState({
@@ -62,8 +68,39 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
       onClose();
       setEmail('');
       setPassword('');
-    } catch (err: any) {
-      setError(err.message || 'Invalid email or password');
+    } catch (err: unknown) {
+      // Always show generic error message for login
+      setError('Invalid email or password.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setForgotPasswordError('');
+    setForgotPasswordSuccess(false);
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(`${getApiUrl()}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: forgotPasswordEmail }),
+      });
+
+      if (!response.ok) {
+        const errorData = await parseErrorResponse(response);
+        setForgotPasswordError(errorData?.message || 'Something went wrong. Please try again.');
+      } else {
+        const data = await response.json();
+        setForgotPasswordSuccess(true);
+        setForgotPasswordError('');
+      }
+    } catch (error) {
+      setForgotPasswordError('Failed to connect to server. Please try again later.');
     } finally {
       setIsSubmitting(false);
     }
@@ -96,12 +133,17 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
         [name]: type === 'checkbox' ? checked : value,
       }));
     }
+    // Clear error when user edits the field
     if (signUpErrors[name]) {
       setSignUpErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[name];
         return newErrors;
       });
+    }
+    // Clear general error when editing email
+    if (name === 'email' && error) {
+      setError('');
     }
   };
 
@@ -183,26 +225,27 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        let errorMessage = 'Sign up failed. Please try again.';
+        const errorData = await parseErrorResponse(response);
         
-        if (response.status === 409) {
-          errorMessage = 'Email already exists. Please use a different email or sign in instead.';
-          setSignUpErrors({ email: errorMessage });
-        } else if (response.status === 400) {
-          errorMessage = 'Invalid data. Please check your information.';
-          try {
-            const errorData = JSON.parse(errorText);
-            const newErrors: { [key: string]: string } = {};
-            if (errorData.message) {
+        if (errorData && isErrorCode(errorData, ErrorCode.EMAIL_ALREADY_EXISTS)) {
+          // Show email-specific error with sign in link
+          setSignUpErrors({ 
+            email: 'This email is already registered. Try signing in instead.' 
+          });
+        } else {
+          // Handle other validation errors
+          const newErrors: { [key: string]: string } = {};
+          if (errorData?.message) {
+            // Try to map to specific field if possible
+            if (errorData.message.toLowerCase().includes('email')) {
+              newErrors.email = errorData.message;
+            } else {
               newErrors.email = errorData.message;
             }
-            setSignUpErrors(newErrors);
-          } catch {
-            setSignUpErrors({ email: errorMessage });
+          } else {
+            newErrors.email = 'Sign up failed. Please check your information and try again.';
           }
-        } else {
-          setSignUpErrors({ email: errorMessage });
+          setSignUpErrors(newErrors);
         }
         setIsSubmitting(false);
         return;
@@ -300,11 +343,15 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
 
         {mode === 'signin' ? (
           <>
-            <h2>Sign In</h2>
-            <p className={styles.subtitle}>Enter your credentials to access your account</p>
+            {!showForgotPassword ? (
+              <>
+                <h2>Sign In</h2>
+                <p className={styles.subtitle}>Enter your credentials to access your account</p>
 
-            <form onSubmit={handleSignIn} className={styles.form}>
-              {error && <div className={styles.errorMessage}>{error}</div>}
+                <form onSubmit={handleSignIn} className={styles.form}>
+                  {error && (
+                    <div className={styles.errorMessage}>{error}</div>
+                  )}
 
               <div className={styles.formGroup}>
                 <label htmlFor="email">Email</label>
@@ -312,7 +359,10 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                   type="email"
                   id="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (error) setError(''); // Clear error when user edits
+                  }}
                   placeholder="your.email@example.com"
                   required
                   disabled={isSubmitting}
@@ -325,31 +375,101 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                   type="password"
                   id="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (error) setError(''); // Clear error when user edits
+                  }}
                   placeholder="Enter your password"
                   required
                   disabled={isSubmitting}
                 />
               </div>
 
-              <div className={styles.formActions}>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleClose}
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  variant="primary"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? 'Signing In...' : 'Sign In'}
-                </Button>
+                  <div className={styles.forgotPasswordLink}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowForgotPassword(true);
+                        setError('');
+                      }}
+                      className={styles.linkButton}
+                      disabled={isSubmitting}
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+
+                  <div className={styles.formActions}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleClose}
+                      disabled={isSubmitting}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? 'Signing In...' : 'Sign In'}
+                    </Button>
+                  </div>
+                </form>
+              </>
+            ) : (
+              <div className={styles.forgotPasswordSection}>
+                <h2>Reset Password</h2>
+                <form onSubmit={handleForgotPassword}>
+                  {forgotPasswordSuccess && (
+                    <div className={styles.successMessage}>
+                      If an account exists for this email, you'll receive a reset link shortly.
+                    </div>
+                  )}
+                  {forgotPasswordError && (
+                    <div className={styles.errorMessage}>{forgotPasswordError}</div>
+                  )}
+                  <div className={styles.formGroup}>
+                    <label htmlFor="forgotEmail">Email</label>
+                    <input
+                      type="email"
+                      id="forgotEmail"
+                      value={forgotPasswordEmail}
+                      onChange={(e) => {
+                        setForgotPasswordEmail(e.target.value);
+                        setForgotPasswordError('');
+                      }}
+                      placeholder="your.email@example.com"
+                      required
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  <div className={styles.formActions}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setShowForgotPassword(false);
+                        setForgotPasswordEmail('');
+                        setForgotPasswordSuccess(false);
+                        setForgotPasswordError('');
+                      }}
+                      disabled={isSubmitting}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? 'Sending...' : 'Send Reset Link'}
+                    </Button>
+                  </div>
+                </form>
               </div>
-            </form>
+            )}
           </>
         ) : (
           <>
@@ -400,7 +520,23 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                     disabled={isSubmitting}
                   />
                   {signUpErrors.email && (
-                    <span className={styles.fieldError}>{signUpErrors.email}</span>
+                    <>
+                      <span className={styles.fieldError}>{signUpErrors.email}</span>
+                      {signUpErrors.email.includes('already registered') ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMode('signin');
+                            setError('');
+                            setSignUpErrors({});
+                          }}
+                          className={styles.linkButton}
+                          style={{ marginTop: '4px', fontSize: '0.875rem' }}
+                        >
+                          Sign in instead
+                        </button>
+                      ) : null}
+                    </>
                   )}
                 </div>
               </div>

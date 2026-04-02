@@ -162,6 +162,12 @@ public class ClubService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Player is already in this team");
         }
 
+        // Check if team already has 2 players (padel teams are 2 players max)
+        List<Player> currentTeamPlayers = playerRepository.findByTeamId(teamId);
+        if (currentTeamPlayers.size() >= 2) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team is full (maximum 2 players allowed)");
+        }
+
         // Add player to team
         com.cupl.backend.model.PlayerTeam playerTeam = new com.cupl.backend.model.PlayerTeam();
         playerTeam.setPlayerId(playerId);

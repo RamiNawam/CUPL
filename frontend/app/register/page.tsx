@@ -2,8 +2,10 @@
 
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { getApiUrl } from '@/lib/api';
+import { parseErrorResponse, isErrorCode, ErrorCode } from '@/lib/errors';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Section from '@/components/Section';
@@ -177,26 +179,26 @@ export default function RegisterPage() {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        let errorMessage = 'Sign up failed. Please try again.';
+        const errorData = await parseErrorResponse(response);
         
-        if (response.status === 409) {
-          errorMessage = 'Email already exists. Please use a different email or sign in instead.';
-          setErrors({ email: errorMessage });
-        } else if (response.status === 400) {
-          errorMessage = 'Invalid data. Please check your information.';
-          try {
-            const errorData = JSON.parse(errorText);
-            const newErrors: FormErrors = {};
-            if (errorData.message) {
+        if (errorData && isErrorCode(errorData, ErrorCode.EMAIL_ALREADY_EXISTS)) {
+          // Show email-specific error
+          setErrors({ 
+            email: 'This email is already registered. Try signing in instead.' 
+          });
+        } else {
+          // Handle other validation errors
+          const newErrors: FormErrors = {};
+          if (errorData?.message) {
+            if (errorData.message.toLowerCase().includes('email')) {
+              newErrors.email = errorData.message;
+            } else {
               newErrors.email = errorData.message;
             }
-            setErrors(newErrors);
-          } catch {
-            setErrors({ email: errorMessage });
+          } else {
+            newErrors.email = 'Sign up failed. Please check your information and try again.';
           }
-        } else {
-          setErrors({ email: errorMessage });
+          setErrors(newErrors);
         }
         setIsSubmitting(false);
         return;
@@ -285,7 +287,19 @@ export default function RegisterPage() {
                 placeholder="your.email@example.com"
               />
               {errors.email && (
-                <span className={styles.errorMessage}>{errors.email}</span>
+                <>
+                  <span className={styles.errorMessage}>{errors.email}</span>
+                  {(errors.email.includes('already registered') || 
+                    errors.email.includes('already exists')) && (
+                    <Link 
+                      href="/" 
+                      className={styles.linkButton}
+                      style={{ marginTop: '4px', fontSize: '0.875rem', display: 'inline-block' }}
+                    >
+                      Sign in instead
+                    </Link>
+                  )}
+                </>
               )}
             </div>
           </div>

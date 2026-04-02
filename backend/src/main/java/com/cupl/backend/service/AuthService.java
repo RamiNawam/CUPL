@@ -2,6 +2,7 @@ package com.cupl.backend.service;
 
 import com.cupl.backend.config.JwtUtil;
 import com.cupl.backend.dto.AuthResponse;
+import com.cupl.backend.dto.ErrorResponse;
 import com.cupl.backend.dto.LoginRequest;
 import com.cupl.backend.model.User;
 import com.cupl.backend.repository.UserRepository;
@@ -27,19 +28,38 @@ public class AuthService {
     public AuthResponse login(LoginRequest request) {
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail().toLowerCase().trim());
         
-        if (userOpt.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
+        // Always return the same error message regardless of whether email exists or password is wrong
+        if (userOpt.isEmpty() || !passwordEncoder.matches(request.getPassword(), userOpt.get().getPassword())) {
+            throw new ResponseStatusException(
+                HttpStatus.UNAUTHORIZED, 
+                ErrorResponse.INVALID_CREDENTIALS
+            );
         }
 
         User user = userOpt.get();
-        
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
-        }
 
         // Generate JWT token
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
         
         return new AuthResponse(user, token);
+    }
+
+    public void processForgotPassword(String email) {
+        // Always process the request but don't reveal if email exists
+        // In a real implementation, you would:
+        // 1. Check if user exists
+        // 2. Generate reset token
+        // 3. Send email with reset link
+        // 4. Store reset token with expiration
+        
+        // For now, we just log it (in production, implement actual email sending)
+        String normalizedEmail = email.toLowerCase().trim();
+        Optional<User> userOpt = userRepository.findByEmail(normalizedEmail);
+        
+        if (userOpt.isPresent()) {
+            // User exists - in production, send reset email here
+            // For now, we just silently process it
+        }
+        // If user doesn't exist, we still return success to prevent email enumeration
     }
 }

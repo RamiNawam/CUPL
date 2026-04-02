@@ -146,14 +146,19 @@ export default function ManageClubPage() {
       }, user?.token);
 
       if (response.ok) {
-        // Refresh team players
-        const teamPlayersResponse = await fetchWithAuth(`/api/clubs/teams/${teamId}/players`, {}, user?.token);
-        if (teamPlayersResponse.ok) {
-          const players = await teamPlayersResponse.json();
-          setTeamPlayers(prev => ({
-            ...prev,
-            [teamId]: players
-          }));
+        // Refresh all team players to update available lists
+        const teamsResponse = await fetchWithAuth(`/api/clubs/${club.id}/teams`, {}, user?.token);
+        if (teamsResponse.ok) {
+          const teamsData = await teamsResponse.json();
+          const teamPlayersMap: { [teamId: string]: Player[] } = {};
+          for (const team of teamsData) {
+            const teamPlayersResponse = await fetchWithAuth(`/api/clubs/teams/${team.id}/players`, {}, user?.token);
+            if (teamPlayersResponse.ok) {
+              const players = await teamPlayersResponse.json();
+              teamPlayersMap[team.id] = players;
+            }
+          }
+          setTeamPlayers(teamPlayersMap);
         }
         setSelectedTeamForPlayer(prev => {
           const newState = { ...prev };
@@ -176,14 +181,19 @@ export default function ManageClubPage() {
       }, user?.token);
 
       if (response.ok) {
-        // Refresh team players
-        const teamPlayersResponse = await fetchWithAuth(`/api/clubs/teams/${teamId}/players`, {}, user?.token);
-        if (teamPlayersResponse.ok) {
-          const players = await teamPlayersResponse.json();
-          setTeamPlayers(prev => ({
-            ...prev,
-            [teamId]: players
-          }));
+        // Refresh all team players to update available lists
+        const teamsResponse = await fetchWithAuth(`/api/clubs/${club.id}/teams`, {}, user?.token);
+        if (teamsResponse.ok) {
+          const teamsData = await teamsResponse.json();
+          const teamPlayersMap: { [teamId: string]: Player[] } = {};
+          for (const team of teamsData) {
+            const teamPlayersResponse = await fetchWithAuth(`/api/clubs/teams/${team.id}/players`, {}, user?.token);
+            if (teamPlayersResponse.ok) {
+              const players = await teamPlayersResponse.json();
+              teamPlayersMap[team.id] = players;
+            }
+          }
+          setTeamPlayers(teamPlayersMap);
         }
       }
     } catch (error) {
@@ -199,11 +209,17 @@ export default function ManageClubPage() {
     return teamPlayers[teamId] || [];
   };
 
+  const isPlayerInAnyTeam = (playerId: string): boolean => {
+    return Object.values(teamPlayers).some(players => 
+      players.some(p => p.id === playerId)
+    );
+  };
+
   const getAvailablePlayersForTeam = (team: Team): Player[] => {
     const teamGender = team.type === 'MEN' ? 'Male' : 'Female';
     return clubPlayers.filter(p => 
       p.gender === teamGender && 
-      !isPlayerInTeam(p.id, team.id)
+      !isPlayerInAnyTeam(p.id)
     );
   };
 
@@ -310,7 +326,7 @@ export default function ManageClubPage() {
                     </h3>
                     
                     <div className={styles.teamSection}>
-                      <h4>Players in Team ({playersInTeam.length})</h4>
+                      <h4>Players in Team ({playersInTeam.length}/2)</h4>
                       {playersInTeam.length === 0 ? (
                         <p className={styles.emptyTeamMessage}>No players in this team yet.</p>
                       ) : (
@@ -329,11 +345,16 @@ export default function ManageClubPage() {
                           ))}
                         </div>
                       )}
+                      {playersInTeam.length >= 2 && (
+                        <p className={styles.teamFullMessage}>Team is full (2/2 players)</p>
+                      )}
                     </div>
 
                     <div className={styles.teamSection}>
                       <h4>Add Players</h4>
-                      {availablePlayers.length === 0 ? (
+                      {playersInTeam.length >= 2 ? (
+                        <p className={styles.emptyTeamMessage}>Team is full. Remove a player to add another.</p>
+                      ) : availablePlayers.length === 0 ? (
                         <p className={styles.emptyTeamMessage}>No available players for this team.</p>
                       ) : (
                         <div className={styles.availablePlayersList}>
@@ -344,6 +365,7 @@ export default function ManageClubPage() {
                                 onClick={() => handleAddPlayerToTeam(player.id, team.id)}
                                 variant="primary"
                                 size="small"
+                                disabled={playersInTeam.length >= 2}
                               >
                                 Add to Team
                               </Button>

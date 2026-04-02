@@ -4,27 +4,117 @@
   flex-direction: column;
 }
 
+/* Hero Section */
 .heroSection {
   text-align: center;
-  padding: var(--spacing-xl) 0;
-  background: linear-gradient(135deg, rgba(209, 22, 42, 0.1) 0%, rgba(0, 0, 0, 1) 100%);
+  padding: 120px 0;
+  background-color: #000;
+
+  min-height: 100vh;
+  /* CRITICAL: These two lines keep the background image contained! */
+  position: relative;
+  overflow: hidden;
 }
 
 .heroSection h1 {
   margin-bottom: var(--spacing-sm);
   color: var(--color-white);
+  font-size: 3.5rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
 .subtitle {
-  font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 600;
+  font-size: 1.25rem;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 
 /* About Section */
-.aboutSection {
+/*.aboutSection {*/
+/*  padding: var(--spacing-xl) 0;*/
+/*  background: var(--color-black);*/
+/*}*/
+/* --- REPLACE YOUR OLD ABOUT SECTION CSS WITH THIS --- */
+
+/* Alternating Section Backgrounds */
+.sectionPrimary {
   padding: var(--spacing-xl) 0;
-  background: var(--color-black);
+  background-color: var(--color-black, #000000);
+}
+
+.sectionSecondary {
+  padding: var(--spacing-xl) 0;
+  /* Use a slightly lighter/darker color to alternate.
+     Adjust this hex code to fit your specific theme! */
+  background-color: var(--color-red);
+}
+
+/* Wider, Side-by-Side Layout */
+.wideContent {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+  /* 1400px makes it much wider than the old 800px,
+     while 90% ensures it leaves a small margin on massive screens */
+  max-width: 1400px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+/* Reverses the order so the image is on the left and text on the right */
+.reverseLayout {
+  flex-direction: row-reverse;
+}
+
+.textContent {
+  flex: 1; /* Takes up 50% of the space */
+}
+
+.textContent h2 {
+  color: var(--color-white);
+  margin-bottom: var(--spacing-md);
+  font-size: 2.5rem; /* Scaled up slightly for the wider layout */
+}
+
+.textContent p {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.imageContent {
+  flex: 1; /* Takes up the other 50% of the space */
+  border-radius: 12px;
+  overflow: hidden;
+  /* A placeholder background just in case your images take a second to load */
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  min-height: 350px;
+}
+
+.imageContent img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the image fills the box without stretching */
+  display: block;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 968px) {
+  .wideContent,
+  .reverseLayout {
+    flex-direction: column; /* Stacks text and image on smaller screens */
+    gap: 2rem;
+    width: 90%;
+  }
+
+  .textContent h2 {
+    font-size: 2rem;
+  }
+
+  .textContent p {
+    font-size: 1rem;
+  }
 }
 
 .content {

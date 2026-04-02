@@ -188,6 +188,17 @@
   text-align: center;
 }
 
+.teamFullMessage {
+  color: var(--color-red);
+  font-size: 0.9rem;
+  padding: var(--spacing-sm);
+  text-align: center;
+  font-weight: 600;
+  background: rgba(209, 22, 42, 0.1);
+  border-radius: 6px;
+  margin-top: var(--spacing-xs);
+}
+
 @media (max-width: 768px) {
   .searchBox {
     flex-direction: column;
