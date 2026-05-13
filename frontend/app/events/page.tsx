@@ -105,7 +105,14 @@ export default function EventsPage() {
       const method = editingEvent ? 'PUT' : 'POST';
 
       // If editing and no new image uploaded, don't send image field (keep existing)
-      const requestBody: any = {
+      type EventUpsertPayload = {
+        title: string;
+        date: string;
+        location: string;
+        description: string;
+        image?: string | null;
+      };
+      const requestBody: EventUpsertPayload = {
         title: formData.title,
         date: formData.date,
         location: formData.location,
@@ -144,9 +151,9 @@ export default function EventsPage() {
       setImagePreview(null);
       setEditingEvent(null);
       fetchEvents();
-    } catch (error: any) {
+    } catch (error: unknown) {
       let errorMessage = `Failed to ${editingEvent ? 'update' : 'create'} event`;
-      if (error.message) {
+      if (error instanceof Error && error.message) {
         errorMessage = error.message;
       } else if (error instanceof TypeError && error.message.includes('fetch')) {
         errorMessage = 'Unable to connect to server. Please make sure the backend is running.';

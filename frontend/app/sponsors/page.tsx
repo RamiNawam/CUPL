@@ -354,13 +354,13 @@ export default function SponsorsPage() {
             {isSuccess ? (
               <div className={styles.successMessage}>
                 <h3>Thank You!</h3>
-                <p>We've received your information and will contact you soon.</p>
+                <p>We&apos;ve received your information and will contact you soon.</p>
               </div>
             ) : (
               <>
                 <h2>Become a Sponsor</h2>
                 <p className={styles.modalSubtitle}>
-                  Fill out the form below and we'll get in touch with you.
+                  Fill out the form below and we&apos;ll get in touch with you.
                 </p>
 
                 <form onSubmit={handleSubmit} className={styles.sponsorForm}>

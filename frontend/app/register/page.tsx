@@ -219,7 +219,7 @@ export default function RegisterPage() {
         setIsSuccess(true);
         // Still show success, user can sign in manually
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Sign up error:', error);
       setErrors({ email: 'Failed to connect to server. Please try again later.' });
       setIsSubmitting(false);
@@ -233,7 +233,7 @@ export default function RegisterPage() {
         <Section className={styles.successSection}>
           <div className={styles.successContent}>
             <h2>Sign Up Successful!</h2>
-            <p>Your account has been created and you've been signed in automatically.</p>
+            <p>Your account has been created and you&apos;ve been signed in automatically.</p>
             <p className={styles.successNote}>
               Redirecting to home page...
             </p>

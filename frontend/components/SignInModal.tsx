@@ -272,7 +272,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
         // Registration succeeded but auto-login failed
         setError('Account created but failed to sign in. Please sign in manually.');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Sign up error:', error);
       setError('Failed to connect to server. Please try again later.');
     } finally {
@@ -424,7 +424,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                 <form onSubmit={handleForgotPassword}>
                   {forgotPasswordSuccess && (
                     <div className={styles.successMessage}>
-                      If an account exists for this email, you'll receive a reset link shortly.
+                      If an account exists for this email, you&apos;ll receive a reset link shortly.
                     </div>
                   )}
                   {forgotPasswordError && (

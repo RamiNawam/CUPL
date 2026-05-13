@@ -116,7 +116,7 @@ export default function AboutPage() {
               <p>
                 Our mission is twofold: to provide a platform for competitive padel
                 competition among Canadian universities, and to build a strong, inclusive
-                community of players who share a passion for the sport. We're committed to
+                community of players who share a passion for the sport. We&apos;re committed to
                 making padel accessible to students while maintaining the highest standards
                 of competition.
               </p>

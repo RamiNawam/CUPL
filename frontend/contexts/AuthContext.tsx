@@ -57,9 +57,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Re-throw with a user-friendly message
-      if (error.message) {
+      if (error instanceof Error && error.message) {
         throw error;
       }
       throw new Error('Failed to connect to server. Please check if the backend is running.');
